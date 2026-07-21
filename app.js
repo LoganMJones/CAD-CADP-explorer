@@ -22,7 +22,8 @@ function polySegments(poly) {
   let xs = [];
   let ys = [];
   const flush = () => {
-    if (xs.length >= 2) segs.push({ T: xs, x: ys });
+    // keep length-1 pieces as markers so transition crumbs aren't dropped
+    if (xs.length >= 1) segs.push({ T: xs, x: ys });
     xs = [];
     ys = [];
   };
@@ -122,20 +123,25 @@ function bifTraces(data, layersOn, annotOn) {
   traces.push(...guide, ...bounds);
 
   const layerVis = [];
-  data.branches.forEach((br) => {
-    for (const layer of ["stable", "dyn_unstable", "inv_unstable"]) {
+  // Draw unstable under stable (Makie order): thin dyn → translucent inv → thick stable
+  for (const layer of ["dyn_unstable", "inv_unstable", "stable"]) {
+    data.branches.forEach((br) => {
       const style = LAYER_STYLE[layer];
       for (const poly of br.polylines[layer] || []) {
-        // SVG scatter + explicit segments: keeps dyn/inv-unstable pieces that
-        // scattergl silently drops at null/NaN breaks.
         for (const seg of polySegments(poly)) {
+          const isPoint = seg.T.length < 2;
           traces.push({
             type: "scatter",
-            mode: "lines",
+            mode: isPoint ? "markers" : "lines",
             x: seg.T,
             y: seg.x,
-            line: { color: br.color, width: style.width, simplify: false },
-            opacity: style.opacity,
+            line: isPoint
+              ? undefined
+              : { color: br.color, width: style.width, simplify: false },
+            marker: isPoint
+              ? { color: br.color, size: Math.max(4, style.width), opacity: style.opacity }
+              : undefined,
+            opacity: isPoint ? 1 : style.opacity,
             connectgaps: false,
             visible: layersOn[layer],
             hoverinfo: "skip",
@@ -144,8 +150,8 @@ function bifTraces(data, layersOn, annotOn) {
           layerVis.push(layer);
         }
       }
-    }
-  });
+    });
+  }
 
   traces.push({
     type: "scatter",
