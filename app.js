@@ -113,18 +113,6 @@ function boundaryTraces(data, show) {
   }));
 }
 
-function countLayerTraces(data) {
-  let n = 0;
-  data.branches.forEach((br) => {
-    for (const layer of ["stable", "dyn_unstable", "inv_unstable"]) {
-      for (const poly of br.polylines[layer] || []) {
-        n += polySegments(poly).length;
-      }
-    }
-  });
-  return n;
-}
-
 function bifTraces(data, layersOn, annotOn) {
   const traces = [];
   traces.push(stabilityHeatmap(data.stability_band, data.axis.ylim));
