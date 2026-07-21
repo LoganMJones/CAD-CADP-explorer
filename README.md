@@ -26,4 +26,17 @@ julia --project=. prototypes/export_web_explorer.jl ../CAD-CADP-explorer/data
 
 ## GitHub Pages
 
-Settings → Pages → Deploy from branch `main` → `/ (root)`.
+```bash
+# from this directory (after creating the empty GitHub repo)
+gh repo create LoganMJones/CAD-CADP-explorer --public --source=. --remote=origin --push
+# then: Settings → Pages → Deploy from branch main → / (root)
+```
+
+Note: `data/*.json.gz` is ~50–75 MB each. Prefer [Git LFS](https://git-lfs.com) before pushing:
+
+```bash
+git lfs install
+git lfs track "data/*.json.gz"
+git add .gitattributes data/*.json.gz
+git commit -m "Track data with Git LFS"
+```
