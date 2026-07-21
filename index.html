@@ -11,18 +11,30 @@
   <header>
     <h1>Cyclic adaptive dynamics</h1>
     <p class="lede">
-      Poster-style bifurcation diagrams (CAD over CADP). Toggle stability classes,
-      pick a community branch, and scroll through temperature amplitude.
+      Poster-style bifurcation diagrams (CAD over CADP). Toggle stability classes and
+      qualitative guides, pick a community branch, and scroll through temperature amplitude.
     </p>
   </header>
 
   <section id="panel-cad" class="model-panel" data-model="cad">
     <div class="model-head">
       <h2>Predator absent</h2>
-      <div class="toggles" aria-label="Stability layers">
-        <label><input type="checkbox" data-layer="stable" checked /> Stable</label>
-        <label><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
-        <label><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
+      <div class="toggles" aria-label="Display layers">
+        <label title="Communities that are dynamically stable and invasion-stable (thick poster curves).">
+          <input type="checkbox" data-layer="stable" checked /> Stable
+        </label>
+        <label title="Continuation points that are dynamically unstable (thin lines).">
+          <input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable
+        </label>
+        <label title="Dynamically stable but invasion-unstable (translucent thick lines).">
+          <input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable
+        </label>
+        <label title="Faint horizontal trait guides at x = ±5, ±10, … (poster grid). Off by default.">
+          <input type="checkbox" data-annot="guides" /> Trait guides
+        </label>
+        <label title="Dashed vertical markers at approximate density-regime transitions (poster). Off by default.">
+          <input type="checkbox" data-annot="boundaries" /> Density transitions
+        </label>
       </div>
       <div class="controls">
         <label>Branch
@@ -48,10 +60,22 @@
   <section id="panel-cadp" class="model-panel" data-model="cadp">
     <div class="model-head">
       <h2>Predator present</h2>
-      <div class="toggles" aria-label="Stability layers">
-        <label><input type="checkbox" data-layer="stable" checked /> Stable</label>
-        <label><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
-        <label><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
+      <div class="toggles" aria-label="Display layers">
+        <label title="Communities that are dynamically stable and invasion-stable (thick poster curves).">
+          <input type="checkbox" data-layer="stable" checked /> Stable
+        </label>
+        <label title="Continuation points that are dynamically unstable (thin lines).">
+          <input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable
+        </label>
+        <label title="Dynamically stable but invasion-unstable (translucent thick lines).">
+          <input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable
+        </label>
+        <label title="Faint horizontal trait guides at x = ±5, ±10, … (poster grid). Off by default.">
+          <input type="checkbox" data-annot="guides" /> Trait guides
+        </label>
+        <label title="Dashed vertical markers at approximate density-regime transitions (poster). Off by default.">
+          <input type="checkbox" data-annot="boundaries" /> Density transitions
+        </label>
       </div>
       <div class="controls">
         <label>Branch
@@ -77,7 +101,7 @@
   <footer>
     Data exported from
     <a href="https://github.com/LoganMJones/CAD-CADP">CAD-CADP</a>
-    continuation runs (<code>ds_max = 0.01</code>).
+    continuation runs (<code>ds_max = 0.01</code>). Hover toggles for short explanations.
   </footer>
 
   <script src="app.js"></script>
