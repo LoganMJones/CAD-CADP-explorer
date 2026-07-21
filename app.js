@@ -2,14 +2,43 @@
 
 const LAYER_STYLE = {
   stable: { width: 5, opacity: 1 },
-  dyn_unstable: { width: 1.2, opacity: 1 },
-  inv_unstable: { width: 5, opacity: 0.28 },
+  dyn_unstable: { width: 1.25, opacity: 1 },
+  // slightly stronger than Makie 0.25 so segments read on the dark stability band
+  inv_unstable: { width: 5, opacity: 0.4 },
 };
 
 const BAND_LIGHT = "rgb(222, 237, 252)";
 const BAND_DARK = "rgb(1, 26, 61)";
 const AXIS_BG = "rgb(77, 92, 110)";
 const PLOT_CFG = { responsive: true, displayModeBar: false };
+
+function isFiniteNum(v) {
+  return typeof v === "number" && Number.isFinite(v);
+}
+
+/** Split NaN/null-gapped polylines into continuous segments (scattergl drops gaps). */
+function polySegments(poly) {
+  const segs = [];
+  let xs = [];
+  let ys = [];
+  const flush = () => {
+    if (xs.length >= 2) segs.push({ T: xs, x: ys });
+    xs = [];
+    ys = [];
+  };
+  for (let i = 0; i < poly.T.length; i++) {
+    const t = poly.T[i];
+    const x = poly.x[i];
+    if (isFiniteNum(t) && isFiniteNum(x)) {
+      xs.push(t);
+      ys.push(x);
+    } else {
+      flush();
+    }
+  }
+  flush();
+  return segs;
+}
 
 async function loadGzipJson(url) {
   const res = await fetch(url);
@@ -84,6 +113,18 @@ function boundaryTraces(data, show) {
   }));
 }
 
+function countLayerTraces(data) {
+  let n = 0;
+  data.branches.forEach((br) => {
+    for (const layer of ["stable", "dyn_unstable", "inv_unstable"]) {
+      for (const poly of br.polylines[layer] || []) {
+        n += polySegments(poly).length;
+      }
+    }
+  });
+  return n;
+}
+
 function bifTraces(data, layersOn, annotOn) {
   const traces = [];
   traces.push(stabilityHeatmap(data.stability_band, data.axis.ylim));
@@ -92,21 +133,28 @@ function bifTraces(data, layersOn, annotOn) {
   const bounds = boundaryTraces(data, annotOn.boundaries);
   traces.push(...guide, ...bounds);
 
+  const layerVis = [];
   data.branches.forEach((br) => {
     for (const layer of ["stable", "dyn_unstable", "inv_unstable"]) {
       const style = LAYER_STYLE[layer];
       for (const poly of br.polylines[layer] || []) {
-        traces.push({
-          type: "scattergl",
-          mode: "lines",
-          x: poly.T,
-          y: poly.x,
-          line: { color: br.color, width: style.width },
-          opacity: style.opacity,
-          visible: layersOn[layer],
-          hoverinfo: "skip",
-          showlegend: false,
-        });
+        // SVG scatter + explicit segments: keeps dyn/inv-unstable pieces that
+        // scattergl silently drops at null/NaN breaks.
+        for (const seg of polySegments(poly)) {
+          traces.push({
+            type: "scatter",
+            mode: "lines",
+            x: seg.T,
+            y: seg.x,
+            line: { color: br.color, width: style.width, simplify: false },
+            opacity: style.opacity,
+            connectgaps: false,
+            visible: layersOn[layer],
+            hoverinfo: "skip",
+            showlegend: false,
+          });
+          layerVis.push(layer);
+        }
       }
     }
   });
@@ -125,6 +173,7 @@ function bifTraces(data, layersOn, annotOn) {
     traces,
     nGuide: guide.length,
     nBound: bounds.length,
+    layerVis,
   };
 }
 
@@ -234,9 +283,14 @@ class ModelPanel {
   }
 
   async drawBif() {
-    const { traces, nGuide, nBound } = bifTraces(this.data, this.layersOn, this.annotOn);
+    const { traces, nGuide, nBound, layerVis } = bifTraces(
+      this.data,
+      this.layersOn,
+      this.annotOn
+    );
     this._nGuide = nGuide;
     this._nBound = nBound;
+    this._layerVis = layerVis;
     const ax = this.data.axis;
     const layout = {
       margin: { t: 36, r: 16, b: 48, l: 56 },
@@ -268,16 +322,11 @@ class ModelPanel {
 
   applyVisibility() {
     if (!this._bifReady) return;
-    // trace order: heatmap(1) + guides + boundaries + polys + marker
+    // trace order: heatmap(1) + guides + boundaries + layer segments + marker
     const vis = [true];
     for (let i = 0; i < this._nGuide; i++) vis.push(this.annotOn.guides);
     for (let i = 0; i < this._nBound; i++) vis.push(this.annotOn.boundaries);
-    this.data.branches.forEach((br) => {
-      for (const layer of ["stable", "dyn_unstable", "inv_unstable"]) {
-        const n = (br.polylines[layer] || []).length;
-        for (let i = 0; i < n; i++) vis.push(this.layersOn[layer]);
-      }
-    });
+    for (const layer of this._layerVis || []) vis.push(this.layersOn[layer]);
     vis.push(true);
     Plotly.restyle(this.bifEl, { visible: vis });
   }
