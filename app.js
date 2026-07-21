@@ -201,23 +201,28 @@ function bifTraces(data, layersOn, annotOn) {
       for (const poly of br.polylines[layer] || []) {
         for (const seg of polySegments(poly)) {
           const isPoint = seg.T.length < 2;
-          traces.push({
+          // Omit line/marker keys entirely — Plotly throws on `line: undefined`
+          const tr = {
             type: "scatter",
             mode: isPoint ? "markers" : "lines",
             x: seg.T,
             y: seg.x,
-            line: isPoint
-              ? undefined
-              : { color: br.color, width: style.width, simplify: false },
-            marker: isPoint
-              ? { color: br.color, size: Math.max(4, style.width), opacity: style.opacity }
-              : undefined,
             opacity: isPoint ? 1 : style.opacity,
             connectgaps: false,
             visible: layersOn[layer],
             hoverinfo: "skip",
             showlegend: false,
-          });
+          };
+          if (isPoint) {
+            tr.marker = {
+              color: br.color,
+              size: Math.max(4, style.width),
+              opacity: style.opacity,
+            };
+          } else {
+            tr.line = { color: br.color, width: style.width, simplify: false };
+          }
+          traces.push(tr);
           layerVis.push(layer);
         }
       }
@@ -410,7 +415,8 @@ class ModelPanel {
     for (let i = 0; i < this._nBound; i++) vis.push(this.annotOn.boundaries);
     for (const layer of this._layerVis || []) vis.push(this.layersOn[layer]);
     vis.push(true);
-    Plotly.restyle(this.bifEl, { visible: vis });
+    const idxs = vis.map((_, i) => i);
+    Plotly.restyle(this.bifEl, { visible: vis }, idxs);
   }
 
   async initSidePlots() {
