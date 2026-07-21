@@ -197,8 +197,6 @@ class ModelPanel {
         dtick: 5,
         gridcolor: "rgba(0,0,0,0.12)",
         zeroline: false,
-        scaleanchor: "x",
-        scaleratio: 1,
       },
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: "#f7fafc",
