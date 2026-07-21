@@ -29,11 +29,11 @@
         <label title="Dynamically stable but invasion-unstable (translucent thick lines).">
           <input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable
         </label>
-        <label title="Faint horizontal trait guides at x = ±5, ±10, … (poster grid). Off by default.">
-          <input type="checkbox" data-annot="guides" /> Trait guides
+        <label title="Faint trait / amplitude guides (poster compare grid).">
+          <input type="checkbox" data-annot="guides" checked /> Trait guides
         </label>
-        <label title="Dashed vertical markers at approximate density-regime transitions (poster). Off by default.">
-          <input type="checkbox" data-annot="boundaries" /> Density transitions
+        <label title="Dashed vertical markers at approximate density-regime transitions (poster).">
+          <input type="checkbox" data-annot="boundaries" checked /> Density transitions
         </label>
       </div>
       <div class="controls">
@@ -47,7 +47,14 @@
       </div>
     </div>
     <div class="grid">
-      <div class="bif plot" data-plot="bif"></div>
+      <div class="bif-wrap">
+        <div class="bif plot" data-plot="bif"></div>
+        <div class="stab-cbar" aria-hidden="true">
+          <div class="stab-cbar-bar"></div>
+          <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
+          <div class="stab-cbar-label">Structural stability</div>
+        </div>
+      </div>
       <div class="side">
         <div class="plot" data-plot="cycle-log"></div>
         <div class="plot" data-plot="cycle-lin"></div>
@@ -70,11 +77,11 @@
         <label title="Dynamically stable but invasion-unstable (translucent thick lines).">
           <input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable
         </label>
-        <label title="Faint horizontal trait guides at x = ±5, ±10, … (poster grid). Off by default.">
-          <input type="checkbox" data-annot="guides" /> Trait guides
+        <label title="Faint trait / amplitude guides (poster compare grid).">
+          <input type="checkbox" data-annot="guides" checked /> Trait guides
         </label>
-        <label title="Dashed vertical markers at approximate density-regime transitions (poster). Off by default.">
-          <input type="checkbox" data-annot="boundaries" /> Density transitions
+        <label title="Dashed vertical markers at approximate density-regime transitions (poster).">
+          <input type="checkbox" data-annot="boundaries" checked /> Density transitions
         </label>
       </div>
       <div class="controls">
@@ -88,7 +95,14 @@
       </div>
     </div>
     <div class="grid">
-      <div class="bif plot" data-plot="bif"></div>
+      <div class="bif-wrap">
+        <div class="bif plot" data-plot="bif"></div>
+        <div class="stab-cbar" aria-hidden="true">
+          <div class="stab-cbar-bar"></div>
+          <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
+          <div class="stab-cbar-label">Structural stability</div>
+        </div>
+      </div>
       <div class="side">
         <div class="plot" data-plot="cycle-log"></div>
         <div class="plot" data-plot="cycle-lin"></div>

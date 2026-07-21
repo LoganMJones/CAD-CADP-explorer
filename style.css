@@ -1,12 +1,15 @@
 :root {
-  --bg: #f4f7fb;
+  /* Poster BoxBG / LightBlue + compare-plot ink */
+  --poster-blue: #b9d6f2;
+  --bg: #e8f1fa;
   --ink: #142033;
-  --muted: #5a6a7e;
+  --muted: #3d4f63;
   --panel: #ffffff;
-  --line: #c5d0de;
+  --panel-tint: #f3f8fc;
+  --line: #9eb6ce;
   --accent: #2f6fc9;
   --niche: #4d5c6e;
-  --font: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font: "Palatino Linotype", Palatino, "Book Antiqua", "Iowan Old Style", Georgia, serif;
   --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
@@ -16,11 +19,10 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    radial-gradient(1200px 500px at 10% -10%, #dce9f7 0%, transparent 55%),
-    radial-gradient(900px 400px at 90% 0%, #e8eef6 0%, transparent 50%),
-    var(--bg);
+    linear-gradient(180deg, var(--poster-blue) 0%, #d5e8f7 28%, var(--bg) 70%);
   font-family: var(--font);
   line-height: 1.45;
+  min-height: 100vh;
 }
 
 header, footer {
@@ -33,6 +35,7 @@ header h1 {
   margin: 0 0 0.35rem;
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 .lede {
@@ -46,10 +49,10 @@ header h1 {
   max-width: 1200px;
   margin: 1rem auto 1.75rem;
   padding: 1rem 1.25rem 1.25rem;
-  background: var(--panel);
+  background: linear-gradient(180deg, #ffffff 0%, var(--panel-tint) 100%);
   border: 1px solid var(--line);
-  border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(20, 32, 51, 0.04);
+  border-radius: 2px;
+  box-shadow: 0 10px 28px rgba(20, 32, 51, 0.08);
 }
 
 .model-head {
@@ -61,6 +64,7 @@ header h1 {
 .model-head h2 {
   margin: 0;
   font-size: 1.35rem;
+  color: var(--ink);
 }
 
 .toggles, .controls {
@@ -86,7 +90,7 @@ header h1 {
   min-width: 4.5rem;
   padding: 0.2rem 0.35rem;
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 2px;
   background: #fff;
   color: var(--ink);
   font: inherit;
@@ -116,11 +120,48 @@ header h1 {
 .plot {
   min-height: 280px;
   border: 1px solid var(--line);
-  border-radius: 3px;
-  background: #fbfcfe;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.85);
 }
 
-.bif.plot { min-height: 520px; }
+.bif-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.bif.plot {
+  min-height: 520px;
+  background: var(--niche);
+}
+
+.stab-cbar {
+  padding: 0 0.35rem 0.15rem 3.2rem;
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.stab-cbar-bar {
+  height: 14px;
+  border-radius: 1px;
+  /* Poster Reverse(cgrad([light, dark])): Low=dark → High=light */
+  background: linear-gradient(90deg, rgb(1, 26, 61), rgb(222, 237, 252));
+  border: 1px solid rgba(20, 32, 51, 0.25);
+}
+
+.stab-cbar-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+}
+
+.stab-cbar-label {
+  text-align: center;
+  margin-top: 0.05rem;
+  font-size: 0.85rem;
+}
 
 .side {
   display: grid;
@@ -128,7 +169,10 @@ header h1 {
   gap: 0.5rem;
 }
 
-.side .plot { min-height: 150px; }
+.side .plot {
+  min-height: 150px;
+  background: color-mix(in srgb, var(--poster-blue) 22%, white);
+}
 
 .legend {
   font-family: var(--mono);
@@ -163,5 +207,6 @@ footer a { color: var(--accent); }
 
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
-  .bif.plot { min-height: 380px; }
+  .bif.plot { min-height: 400px; }
+  .stab-cbar { padding-left: 2.5rem; }
 }

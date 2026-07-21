@@ -1,4 +1,4 @@
-/* CAD-CADP static bifurcation explorer — poster styling */
+/* CAD-CADP static bifurcation explorer — poster / compare-plot styling */
 
 const LAYER_STYLE = {
   stable: { width: 5, opacity: 1 },
@@ -7,10 +7,29 @@ const LAYER_STYLE = {
   inv_unstable: { width: 5, opacity: 0.4 },
 };
 
-const BAND_LIGHT = "rgb(222, 237, 252)";
-const BAND_DARK = "rgb(1, 26, 61)";
-const AXIS_BG = "rgb(77, 92, 110)";
+// Exact Makie _bif_stable_panel! colors
+const BAND_LIGHT = "rgb(222, 237, 252)"; // RGBf(0.87, 0.93, 0.99)
+const BAND_DARK = "rgb(1, 26, 61)"; // RGBf(0.004, 0.10, 0.24)
+const AXIS_BG = "rgb(77, 92, 110)"; // RGBf(0.30, 0.36, 0.44) — uninhabitable / axis
+const POSTER_BLUE = "#B9D6F2";
 const PLOT_CFG = { responsive: true, displayModeBar: false };
+
+// Poster CADP bifurcation_colors remapped onto export order
+// [1,2,3,9,5,8,4,7,10,12,11,6] (4 & 6 = unstable-only extras)
+const CADP_POSTER_COLORS = [
+  "#8c564b",
+  "#20884b",
+  "#2f6fc9",
+  "#0d7377",
+  "#850915",
+  "#C72240",
+  "#4fb3b8",
+  "#bc8b12",
+  "#c560e4",
+  "#9331b8",
+  "#ff9f24",
+  "#e0a3f0",
+];
 
 function isFiniteNum(v) {
   return typeof v === "number" && Number.isFinite(v);
@@ -22,7 +41,6 @@ function polySegments(poly) {
   let xs = [];
   let ys = [];
   const flush = () => {
-    // keep length-1 pieces as markers so transition crumbs aren't dropped
     if (xs.length >= 1) segs.push({ T: xs, x: ys });
     xs = [];
     ys = [];
@@ -49,8 +67,25 @@ async function loadGzipJson(url) {
   return JSON.parse(text);
 }
 
+function applyPosterColors(data) {
+  if (data.model !== "cadp") return;
+  data.branches.forEach((br, i) => {
+    if (CADP_POSTER_COLORS[i]) br.color = CADP_POSTER_COLORS[i];
+  });
+}
+
+function paletteOf(data) {
+  const p = data.palette || {};
+  return {
+    light: p.band_light || BAND_LIGHT,
+    dark: p.band_dark || BAND_DARK,
+    niche: p.uninhabitable || AXIS_BG,
+    poster: p.poster_blue || POSTER_BLUE,
+  };
+}
+
 function stabilityHeatmap(band, ylim) {
-  // Plotly: z[i][j] at (x[j], y[i]) — two y rows spanning the axis
+  // softeness: 0 = high structural stability (light), 1 = low (dark)
   const z = [band.softness, band.softness];
   return {
     type: "heatmap",
@@ -66,6 +101,37 @@ function stabilityHeatmap(band, ylim) {
     showscale: false,
     hoverinfo: "skip",
     opacity: 0.9,
+  };
+}
+
+/** Uninhabitable funnel overlay — Makie contourf(λ < 0 → col_no). */
+function nicheHeatmap(niche, nicheColor) {
+  if (!niche || !niche.uninhab) return null;
+  const nT = niche.T.length;
+  const nX = niche.x.length;
+  // Stored Tamp-major rows; Plotly wants z[iy][iT]
+  const z = new Array(nX);
+  for (let ix = 0; ix < nX; ix++) {
+    const row = new Array(nT);
+    for (let iT = 0; iT < nT; iT++) {
+      row[iT] = niche.uninhab[iT][ix];
+    }
+    z[ix] = row;
+  }
+  return {
+    type: "heatmap",
+    x: niche.T,
+    y: niche.x,
+    z,
+    colorscale: [
+      [0, "rgba(0,0,0,0)"],
+      [1, nicheColor],
+    ],
+    zmin: 0,
+    zmax: 1,
+    showscale: false,
+    hoverinfo: "skip",
+    opacity: 1,
   };
 }
 
@@ -115,8 +181,13 @@ function boundaryTraces(data, show) {
 }
 
 function bifTraces(data, layersOn, annotOn) {
+  const pal = paletteOf(data);
   const traces = [];
   traces.push(stabilityHeatmap(data.stability_band, data.axis.ylim));
+
+  const niche = nicheHeatmap(data.niche, pal.niche);
+  const hasNiche = !!niche;
+  if (niche) traces.push(niche);
 
   const guide = guideTraces(data, annotOn.guides);
   const bounds = boundaryTraces(data, annotOn.boundaries);
@@ -165,6 +236,7 @@ function bifTraces(data, layersOn, annotOn) {
 
   return {
     traces,
+    hasNiche,
     nGuide: guide.length,
     nBound: bounds.length,
     layerVis,
@@ -174,18 +246,25 @@ function bifTraces(data, layersOn, annotOn) {
 function sideLayout(title, yTitle, yType) {
   return {
     margin: { t: 28, r: 12, b: 36, l: 48 },
-    title: { text: title, font: { size: 12 } },
-    xaxis: { title: "t", titlefont: { size: 11 }, tickfont: { size: 10 }, fixedrange: true },
+    title: { text: title, font: { size: 12, color: "#142033" } },
+    xaxis: {
+      title: "t",
+      titlefont: { size: 11 },
+      tickfont: { size: 10 },
+      fixedrange: true,
+      gridcolor: "rgba(20,32,51,0.08)",
+    },
     yaxis: {
       title: yTitle,
       type: yType || "linear",
       titlefont: { size: 11 },
       tickfont: { size: 10 },
       fixedrange: true,
+      gridcolor: "rgba(20,32,51,0.08)",
     },
     showlegend: false,
     paper_bgcolor: "rgba(0,0,0,0)",
-    plot_bgcolor: "rgba(251,252,254,1)",
+    plot_bgcolor: "rgba(255,255,255,0.72)",
     uirevision: title,
   };
 }
@@ -203,13 +282,15 @@ class ModelPanel {
     this.linEl = root.querySelector('[data-plot="cycle-lin"]');
     this.fitEl = root.querySelector('[data-plot="fit"]');
     this.layersOn = { stable: true, dyn_unstable: true, inv_unstable: true };
-    this.annotOn = { guides: false, boundaries: false };
+    // Match compare plot: faint grid + density transitions on
+    this.annotOn = { guides: true, boundaries: true };
     this.branchIdx = 0;
     this.pointIdx = 0;
     this._bifReady = false;
     this._sidesReady = false;
     this._raf = 0;
     this._pendingIdx = null;
+    this._hasNiche = false;
     this._nGuide = 0;
     this._nBound = 0;
   }
@@ -277,33 +358,39 @@ class ModelPanel {
   }
 
   async drawBif() {
-    const { traces, nGuide, nBound, layerVis } = bifTraces(
+    const { traces, hasNiche, nGuide, nBound, layerVis } = bifTraces(
       this.data,
       this.layersOn,
       this.annotOn
     );
+    this._hasNiche = hasNiche;
     this._nGuide = nGuide;
     this._nBound = nBound;
     this._layerVis = layerVis;
     const ax = this.data.axis;
     const layout = {
-      margin: { t: 36, r: 16, b: 48, l: 56 },
-      title: { text: this.data.title, font: { size: 15 } },
+      margin: { t: 40, r: 18, b: 52, l: 58 },
+      title: {
+        text: this.data.title,
+        font: { size: 16, color: "#142033", family: "Palatino Linotype, Palatino, Georgia, serif" },
+      },
       xaxis: {
-        title: "Amplitude, T_amp",
+        title: { text: "Amplitude, T_amp", font: { size: 13 } },
         range: ax.xlim,
         tickvals: [0, 5, 10, 15, 20, 24],
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
         fixedrange: true,
+        tickfont: { size: 11 },
       },
       yaxis: {
-        title: "Trait, x",
+        title: { text: "Trait, x", font: { size: 13 } },
         range: ax.ylim,
         tickvals: [-24, -20, -15, -10, -5, 0, 5, 10, 15, 20, 24],
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
         fixedrange: true,
+        tickfont: { size: 11 },
       },
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: AXIS_BG,
@@ -316,8 +403,9 @@ class ModelPanel {
 
   applyVisibility() {
     if (!this._bifReady) return;
-    // trace order: heatmap(1) + guides + boundaries + layer segments + marker
+    // trace order: heatmap + optional niche + guides + boundaries + layers + marker
     const vis = [true];
+    if (this._hasNiche) vis.push(true);
     for (let i = 0; i < this._nGuide; i++) vis.push(this.annotOn.guides);
     for (let i = 0; i < this._nBound; i++) vis.push(this.annotOn.boundaries);
     for (const layer of this._layerVis || []) vis.push(this.layersOn[layer]);
@@ -374,8 +462,18 @@ class ModelPanel {
     const linLayout = sideLayout("Density", "n", "linear");
     linLayout.yaxis.range = [0, this.data.Rtot];
     await Promise.all([
-      Plotly.newPlot(this.logEl, cycleTraces.map((tr) => ({ ...tr })), sideLayout("Density (log)", "n", "log"), PLOT_CFG),
-      Plotly.newPlot(this.linEl, cycleTraces.map((tr) => ({ ...tr })), linLayout, PLOT_CFG),
+      Plotly.newPlot(
+        this.logEl,
+        cycleTraces.map((tr) => ({ ...tr })),
+        sideLayout("Density (log)", "n", "log"),
+        PLOT_CFG
+      ),
+      Plotly.newPlot(
+        this.linEl,
+        cycleTraces.map((tr) => ({ ...tr })),
+        linLayout,
+        PLOT_CFG
+      ),
       Plotly.newPlot(this.fitEl, fitTraces, sideLayout("Fitness landscape", "λ", "linear"), PLOT_CFG),
     ]);
     this._sidesReady = true;
@@ -460,7 +558,12 @@ async function bootPanel(el) {
   const model = el.dataset.model;
   const status = el.querySelector(".status");
   status.textContent = "loading data…";
-  const data = await loadGzipJson(`data/${model}.json.gz`);
+  const [data, niche] = await Promise.all([
+    loadGzipJson(`data/${model}.json.gz`),
+    loadGzipJson(`data/${model}_niche.json.gz`).catch(() => null),
+  ]);
+  if (niche && !data.niche) data.niche = niche;
+  applyPosterColors(data);
   status.textContent = "drawing…";
   const panel = new ModelPanel(el, data);
   await panel.init();
