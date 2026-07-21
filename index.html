@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAD vs CADP — Bifurcation Explorer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Cyclic adaptive dynamics</h1>
+    <p class="lede">
+      Poster-style bifurcation diagrams (CAD over CADP). Toggle stability classes,
+      pick a community branch, and scroll through temperature amplitude.
+    </p>
+  </header>
+
+  <section id="panel-cad" class="model-panel" data-model="cad">
+    <div class="model-head">
+      <h2>Predator absent</h2>
+      <div class="toggles" aria-label="Stability layers">
+        <label><input type="checkbox" data-layer="stable" checked /> Stable</label>
+        <label><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
+        <label><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
+      </div>
+      <div class="controls">
+        <label>Branch
+          <select class="branch-menu"></select>
+        </label>
+        <label class="slider-wrap">Point
+          <input type="range" class="point-slider" min="0" max="0" value="0" />
+        </label>
+        <span class="status">loading…</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="bif plot" data-plot="bif"></div>
+      <div class="side">
+        <div class="plot" data-plot="cycle-log"></div>
+        <div class="plot" data-plot="cycle-lin"></div>
+        <div class="plot" data-plot="fit"></div>
+        <div class="legend" data-legend></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-cadp" class="model-panel" data-model="cadp">
+    <div class="model-head">
+      <h2>Predator present</h2>
+      <div class="toggles" aria-label="Stability layers">
+        <label><input type="checkbox" data-layer="stable" checked /> Stable</label>
+        <label><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
+        <label><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
+      </div>
+      <div class="controls">
+        <label>Branch
+          <select class="branch-menu"></select>
+        </label>
+        <label class="slider-wrap">Point
+          <input type="range" class="point-slider" min="0" max="0" value="0" />
+        </label>
+        <span class="status">loading…</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="bif plot" data-plot="bif"></div>
+      <div class="side">
+        <div class="plot" data-plot="cycle-log"></div>
+        <div class="plot" data-plot="cycle-lin"></div>
+        <div class="plot" data-plot="fit"></div>
+        <div class="legend" data-legend></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Data exported from
+    <a href="https://github.com/LoganMJones/CAD-CADP">CAD-CADP</a>
+    continuation runs (<code>ds_max = 0.01</code>).
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
