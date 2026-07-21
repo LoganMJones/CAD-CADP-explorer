@@ -3,18 +3,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CAD vs CADP — Bifurcation Explorer</title>
+  <meta name="description" content="Interactive CAD / CADP bifurcation explorer for KBS REU research: predation, species turnover, and structural stability under seasonal temperature forcing." />
+  <title>Predation, turnover &amp; structural stability — Interactive explorer</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Cyclic adaptive dynamics</h1>
+  <header class="site-header">
+    <p class="eyebrow">KBS REU 2026 · Klausmeier–Litchman Lab</p>
+    <h1>Predation increases species turnover and structural stability in ecological communities</h1>
+    <p class="authors">
+      <a href="https://loganjones.org/" target="_blank" rel="noopener noreferrer">Logan Jones</a>,
+      Jonas Wickman, Nasser Rabi, Christopher A. Klausmeier
+    </p>
     <p class="lede">
-      Poster-style bifurcation diagrams (CAD over CADP). Toggle stability classes and
-      qualitative guides, pick a community branch, and scroll through temperature amplitude.
+      Interactive bifurcation diagrams (CAD over CADP). Toggle stability classes, pick a community branch,
+      and scroll through temperature amplitude. Side panels show densities and the fitness landscape.
     </p>
   </header>
+
+  <aside class="materials" aria-label="Abstract and references">
+    <details class="drop-panel" id="abstract">
+      <summary>Abstract</summary>
+      <div class="drop-panel__body">
+        <p class="drop-panel__lede">
+          <em>Top-down predation increases species turnover and structural stability in ecological communities</em>
+        </p>
+        <p>
+          A mechanistic understanding of species coexistence is a central pursuit in ecology. One factor known to enable coexistence is temporal variation of an environmental variable. Prior eco-evolutionary models show that seasonal temperature fluctuation can facilitate coexistence through the storage effect – species with differing traits can coexist if their gains in good times exceed their losses in bad times. However, the role of predation in shaping coexistence and diversity is less well understood. We compare two models, with and without predation, to assess its effects on emergent community structure and stability. Our analysis shows that introducing a predator increases species turnover (β-diversity). This effect is mediated by a decrease in average instantaneous species diversity (α-diversity) alongside a relatively smaller decrease in time-integrated species diversity (γ-diversity); the resulting shift in their ratio drives higher average turnover. We also find that predation provides communities with increased structural stability – widening the range of environments under which communities can stably coexist. Interestingly, this increase in turnover does not translate into more species-rich evolutionarily stable communities. Predation supports more species richness at lower temperature amplitudes in our ecological model, but these communities fail to persist once thermal optima are allowed to evolve. Our study implies that predation can foster communities that are more robust to varying amplitudes of temperature fluctuations, raising an exciting empirical question: does predation allow communities to remain qualitatively unchanged as temperature fluctuations intensify?
+        </p>
+        <p class="drop-panel__actions">
+          <a href="https://loganjones.org/files/kbs-abstract.pdf" target="_blank" rel="noopener noreferrer">Download abstract (PDF)</a>
+        </p>
+      </div>
+    </details>
+
+    <details class="drop-panel" id="bibliography">
+      <summary>References</summary>
+      <div class="drop-panel__body">
+        <ol class="ref-list">
+          <li>Anderson, S. C., Elsen, P. R., Hughes, B. B., Tonietto, R. K., Bletz, M. C., Gill, D. A., Holgerson, M. A., Kuebbing, S. E., McDonough MacKenzie, C., Meek, M. H. &amp; Veríssimo, D. (2021). Trends in ecology and conservation over eight decades. <em>Frontiers in Ecology and the Environment</em>, 19(5), 274–282. <a href="https://doi.org/10.1002/fee.2320">doi:10.1002/fee.2320</a></li>
+          <li>Beckage, B., Gross, L. J. &amp; Kauffman, S. (2011). The limits to prediction in ecological systems. <em>Ecosphere</em>, 2(11), art125. <a href="https://doi.org/10.1890/ES11-00211.1">doi:10.1890/ES11-00211.1</a></li>
+          <li>Brännström, Å., Johansson, J. &amp; von Festenberg, N. (2013). The Hitchhiker's Guide to Adaptive Dynamics. <em>Games</em>, 4(3), 304–328. <a href="https://doi.org/10.3390/g4030304">doi:10.3390/g4030304</a></li>
+          <li>Chesson, P. (2000). Mechanisms of Maintenance of Species Diversity. <em>Annual Review of Ecology, Evolution, and Systematics</em>, 31, 343–366. <a href="https://doi.org/10.1146/annurev.ecolsys.31.1.343">doi:10.1146/annurev.ecolsys.31.1.343</a></li>
+          <li>Holt, R. D. (1977). Predation, apparent competition, and the structure of prey communities. <em>Theoretical Population Biology</em>, 12(2), 197–229. <a href="https://doi.org/10.1016/0040-5809(77)90042-9">doi:10.1016/0040-5809(77)90042-9</a></li>
+          <li>Holt, R. D., Grover, J. &amp; Tilman, D. (1994). Simple rules for interspecific dominance in systems with exploitative and apparent competition. <em>The American Naturalist</em>, 144(5), 741–771. <a href="https://doi.org/10.1086/285705">doi:10.1086/285705</a></li>
+          <li>Kremer, C. T. &amp; Klausmeier, C. A. (2017). Species packing in eco-evolutionary models of seasonally fluctuating environments. <em>Ecology Letters</em>, 20(9), 1158–1168. <a href="https://doi.org/10.1111/ele.12813">doi:10.1111/ele.12813</a></li>
+          <li>Leibold, M. A., Chase, J. M. &amp; Ernest, S. K. M. (2017). Community assembly and the functioning of ecosystems: How metacommunity processes alter ecosystems attributes. <em>Ecology</em>, 98(4), 909–919. <a href="https://doi.org/10.1002/ecy.1697">doi:10.1002/ecy.1697</a></li>
+          <li>Lorenz, E. N. (1963). Deterministic Nonperiodic Flow. <em>Journal of the Atmospheric Sciences</em>, 20(2), 130–141. <a href="https://doi.org/10.1175/1520-0469(1963)020%3C0130:DNF%3E2.0.CO;2">doi:10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</a></li>
+          <li>Mouquet, N., Lagadeuc, Y., Devictor, V., Doyen, L., Duputié, A., Eveillard, D., Faure, D., Garnier, E., Gimenez, O., Huneman, P., Jabot, F., Jarne, P., Joly, D., Julliard, R., Kéfi, S., Kergoat, G. J., Lavorel, S., Le Gall, L., Meslin, L. &amp; Loreau, M. (2015). Predictive ecology in a changing world. <em>Journal of Applied Ecology</em>, 52(5), 1293–1310. <a href="https://doi.org/10.1111/1365-2664.12482">doi:10.1111/1365-2664.12482</a></li>
+          <li>Paine, R. T. (1966). Food Web Complexity and Species Diversity. <em>The American Naturalist</em>, 100(910), 65–75.</li>
+          <li>Saavedra, S., Rohr, R. P., Bascompte, J., Godoy, O., Kraft, N. J. B. &amp; Levine, J. M. (2017). A structural approach for understanding multispecies coexistence. <em>Ecological Monographs</em>, 87(3), 470–486. <a href="https://doi.org/10.1002/ecm.1263">doi:10.1002/ecm.1263</a></li>
+          <li>Slobodkin, L. B. (2001). Limits to Biodiversity (Species Packing). In S. A. Levin (Ed.), <em>Encyclopedia of Biodiversity</em> (2nd ed., pp. 642–648). Academic Press. <a href="https://doi.org/10.1016/B978-0-12-384719-5.00088-5">doi:10.1016/B978-0-12-384719-5.00088-5</a></li>
+        </ol>
+      </div>
+    </details>
+  </aside>
+
+  <section class="results-intro" id="results">
+    <h2>Results — interactive bifurcation diagrams</h2>
+    <p class="lede">
+      Evolutionarily stable community (ESC) trait values across seasonal amplitude
+      <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
+      Shading is structural stability (lighter = wider persistence). Toggle unstable segments and guides as needed.
+    </p>
+  </section>
 
   <section id="panel-cad" class="model-panel" data-model="cad">
     <div class="model-head">
@@ -46,7 +99,7 @@
         <span class="status">loading…</span>
       </div>
     </div>
-    <div class="grid">
+    <div class="stack">
       <div class="bif-wrap">
         <div class="bif plot" data-plot="bif"></div>
         <div class="stab-cbar" aria-hidden="true">
@@ -94,7 +147,7 @@
         <span class="status">loading…</span>
       </div>
     </div>
-    <div class="grid">
+    <div class="stack">
       <div class="bif-wrap">
         <div class="bif plot" data-plot="bif"></div>
         <div class="stab-cbar" aria-hidden="true">
@@ -115,10 +168,35 @@
   <footer>
     Built by
     <a href="https://loganjones.org/" target="_blank" rel="noopener noreferrer">Logan Jones</a>.
-    <a href="https://loganjones.org/templates/contact" target="_blank" rel="noopener noreferrer">Contact the developer</a>.
+    <a href="https://loganjones.org/templates/contact" target="_blank" rel="noopener noreferrer">Contact</a>.
     Hover toggles for short explanations.
   </footer>
 
   <script src="app.js"></script>
+  <script>
+    (function () {
+      function openPanel(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === "DETAILS") el.open = true;
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function handleHash() {
+        var hash = (location.hash || "").replace(/^#/, "");
+        if (hash === "bibliography" || hash === "references") openPanel("bibliography");
+        else if (hash === "abstract") openPanel("abstract");
+        else if (hash === "results") {
+          var r = document.getElementById("results");
+          if (r) r.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+      window.addEventListener("hashchange", handleHash);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", handleHash);
+      } else {
+        handleHash();
+      }
+    })();
+  </script>
 </body>
 </html>

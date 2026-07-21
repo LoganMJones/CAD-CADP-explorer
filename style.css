@@ -1,5 +1,4 @@
 :root {
-  /* Poster BoxBG / LightBlue + compare-plot ink */
   --poster-blue: #b9d6f2;
   --bg: #e8f1fa;
   --ink: #142033;
@@ -9,62 +8,169 @@
   --line: #9eb6ce;
   --accent: #2f6fc9;
   --niche: #4d5c6e;
+  --dark-blue: #2f5d8a;
   --font: "Palatino Linotype", Palatino, "Book Antiqua", "Iowan Old Style", Georgia, serif;
+  --sans: "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --max: 1100px;
 }
 
 * { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(180deg, var(--poster-blue) 0%, #d5e8f7 28%, var(--bg) 70%);
+    linear-gradient(180deg, var(--poster-blue) 0%, #d5e8f7 22%, var(--bg) 55%);
   font-family: var(--font);
   line-height: 1.45;
   min-height: 100vh;
 }
 
-header, footer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1.5rem 1.25rem 0.5rem;
+.site-header,
+.materials,
+.results-intro,
+.model-panel,
+footer {
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 
-header h1 {
-  margin: 0 0 0.35rem;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  letter-spacing: -0.02em;
-  color: var(--ink);
+.site-header {
+  padding-top: 1.75rem;
+  padding-bottom: 0.75rem;
 }
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.site-header h1 {
+  margin: 0 0 0.45rem;
+  font-size: clamp(1.35rem, 3vw, 1.95rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.authors {
+  margin: 0 0 0.65rem;
+  font-family: var(--sans);
+  font-size: 1rem;
+}
+
+.authors a { color: var(--accent); }
 
 .lede {
   margin: 0;
   max-width: 46rem;
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 1.02rem;
 }
 
+/* ---- Abstract / references dropdowns ---- */
+
+.materials {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.drop-panel {
+  margin: 0 0 0.55rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.drop-panel summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.7rem 0.95rem;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: var(--dark-blue);
+  color: #fff;
+}
+
+.drop-panel summary::-webkit-details-marker { display: none; }
+
+.drop-panel summary::before {
+  content: "▸ ";
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.drop-panel[open] summary::before { transform: rotate(90deg); }
+
+.drop-panel__body {
+  padding: 0.9rem 1rem 1rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  background: color-mix(in srgb, var(--poster-blue) 28%, white);
+}
+
+.drop-panel__lede { margin: 0 0 0.65rem; }
+
+.drop-panel__actions {
+  margin: 0.85rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+}
+
+.drop-panel__actions a,
+.ref-list a { color: var(--accent); }
+
+.ref-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.92rem;
+}
+
+.ref-list li { margin-bottom: 0.55em; }
+
+.results-intro {
+  margin-top: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.results-intro h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.3rem;
+}
+
+/* ---- Model panels: top-down stack for space ---- */
+
 .model-panel {
-  max-width: 1200px;
-  margin: 1rem auto 1.75rem;
-  padding: 1rem 1.25rem 1.25rem;
+  margin-top: 1rem;
+  margin-bottom: 1.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1.25rem;
   background: linear-gradient(180deg, #ffffff 0%, var(--panel-tint) 100%);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: 4px;
   box-shadow: 0 10px 28px rgba(20, 32, 51, 0.08);
 }
 
 .model-head {
   display: grid;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .model-head h2 {
   margin: 0;
   font-size: 1.35rem;
-  color: var(--ink);
 }
 
 .toggles, .controls {
@@ -72,6 +178,7 @@ header h1 {
   flex-wrap: wrap;
   gap: 0.75rem 1.1rem;
   align-items: center;
+  font-family: var(--sans);
   font-size: 0.95rem;
 }
 
@@ -96,12 +203,10 @@ header h1 {
   font: inherit;
 }
 
-.slider-wrap {
-  flex: 1 1 14rem;
-}
+.slider-wrap { flex: 1 1 14rem; }
 
 .slider-wrap input {
-  width: min(28rem, 100%);
+  width: min(36rem, 100%);
   vertical-align: middle;
 }
 
@@ -111,14 +216,14 @@ header h1 {
   color: var(--ink);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.9fr);
+.stack {
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
 }
 
 .plot {
-  min-height: 280px;
+  min-height: 220px;
   border: 1px solid var(--line);
   border-radius: 2px;
   background: rgba(255, 255, 255, 0.85);
@@ -132,7 +237,7 @@ header h1 {
 }
 
 .bif.plot {
-  min-height: 520px;
+  min-height: min(72vh, 640px);
   background: var(--niche);
 }
 
@@ -145,7 +250,6 @@ header h1 {
 .stab-cbar-bar {
   height: 14px;
   border-radius: 1px;
-  /* Poster Reverse(cgrad([light, dark])): Low=dark → High=light */
   background: linear-gradient(90deg, rgb(1, 26, 61), rgb(222, 237, 252));
   border: 1px solid rgba(20, 32, 51, 0.25);
 }
@@ -165,20 +269,22 @@ header h1 {
 
 .side {
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr auto;
-  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  align-items: stretch;
 }
 
 .side .plot {
-  min-height: 150px;
+  min-height: 200px;
   background: color-mix(in srgb, var(--poster-blue) 22%, white);
 }
 
 .legend {
+  grid-column: 1 / -1;
   font-family: var(--mono);
   font-size: 0.78rem;
   color: var(--muted);
-  padding: 0.25rem 0.15rem;
+  padding: 0.15rem 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem 0.85rem;
@@ -198,6 +304,7 @@ header h1 {
 }
 
 footer {
+  padding-top: 0.5rem;
   padding-bottom: 2.5rem;
   color: var(--muted);
   font-size: 0.9rem;
@@ -205,8 +312,8 @@ footer {
 
 footer a { color: var(--accent); }
 
-@media (max-width: 900px) {
-  .grid { grid-template-columns: 1fr; }
-  .bif.plot { min-height: 400px; }
-  .stab-cbar { padding-left: 2.5rem; }
+@media (max-width: 800px) {
+  .side { grid-template-columns: 1fr; }
+  .bif.plot { min-height: 420px; }
+  .stab-cbar { padding-left: 1.5rem; }
 }
