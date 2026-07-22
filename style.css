@@ -894,8 +894,8 @@ body.kbs-poster-page {
 
 .results-compare {
   display: grid;
-  grid-template-columns: minmax(0, 0.56fr) minmax(14rem, 0.44fr);
-  gap: 0.85rem 1.25rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
   align-items: stretch;
   margin: 0;
   width: 100%;
@@ -927,7 +927,6 @@ body.kbs-poster-page {
   font-size: 1.05em;
   line-height: 1.55;
   max-width: none;
-  align-self: center;
 }
 
 .explore-help {
@@ -1115,10 +1114,6 @@ body.kbs-poster-page {
 @media (max-width: 960px) {
   .results-compare {
     grid-template-columns: 1fr;
-  }
-
-  .results-lede {
-    order: -1;
   }
 
   .results-compare__media img {
