@@ -836,6 +836,10 @@ body.kbs-poster-page {
     grid-template-columns: 1fr;
   }
 
+  .method-row__text {
+    order: -1;
+  }
+
   .method-row__fig {
     max-width: 16rem;
     justify-self: center;
@@ -1111,6 +1115,10 @@ body.kbs-poster-page {
 @media (max-width: 960px) {
   .results-compare {
     grid-template-columns: 1fr;
+  }
+
+  .results-lede {
+    order: -1;
   }
 
   .results-compare__media img {
