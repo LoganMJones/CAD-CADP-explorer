@@ -1034,7 +1034,7 @@ body.kbs-poster-page {
 }
 
 .results-interactive .plot {
-  min-height: 130px;
+  min-height: 110px;
   border: 1px solid rgba(10, 10, 10, 0.4);
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.88);
@@ -1048,8 +1048,8 @@ body.kbs-poster-page {
 }
 
 .bif.plot {
-  min-height: 380px;
-  max-height: min(62vh, 30rem);
+  min-height: 280px;
+  max-height: min(48vh, 22rem);
   flex: 1 1 auto;
   background: #b9d6f2;
 }
@@ -1087,7 +1087,7 @@ body.kbs-poster-page {
 }
 
 .side .plot {
-  min-height: 115px;
+  min-height: 88px;
 }
 
 .legend {
