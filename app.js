@@ -404,6 +404,13 @@ function axisTitle(text, fontSize = 11) {
   return { text, font: { size: fontSize, color: "#142033" }, standoff: 10 };
 }
 
+/** Always two digits after the decimal (no scientific notation). */
+function fmt2(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return "—";
+  return n.toFixed(2);
+}
+
 function sideLayout(title, xTitle, yTitle, yType) {
   return {
     margin: { t: 34, r: 16, b: 52, l: 62 },
@@ -418,6 +425,8 @@ function sideLayout(title, xTitle, yTitle, yType) {
       tickfont: { size: 10 },
       tickformat: ".2f",
       hoverformat: ".2f",
+      exponentformat: "none",
+      showexponent: "none",
       automargin: true,
       fixedrange: true,
       gridcolor: "rgba(20,32,51,0.08)",
@@ -429,6 +438,8 @@ function sideLayout(title, xTitle, yTitle, yType) {
       tickfont: { size: 10 },
       tickformat: ".2f",
       hoverformat: ".2f",
+      exponentformat: "none",
+      showexponent: "none",
       automargin: true,
       fixedrange: true,
       gridcolor: "rgba(20,32,51,0.08)",
@@ -561,6 +572,8 @@ class ModelPanel {
         tickvals: [0, 5, 10, 15, 20, 24],
         tickformat: ".2f",
         hoverformat: ".2f",
+        exponentformat: "none",
+        showexponent: "none",
         automargin: true,
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
@@ -573,6 +586,8 @@ class ModelPanel {
         tickvals: [-24, -20, -15, -10, -5, 0, 5, 10, 15, 20, 24],
         tickformat: ".2f",
         hoverformat: ".2f",
+        exponentformat: "none",
+        showexponent: "none",
         automargin: true,
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
@@ -691,7 +706,7 @@ class ModelPanel {
     const t = br.t;
     const S = this.data.S_max;
 
-    this.status.textContent = `idx = ${pt.idx}, T_amp = ${Number(Tamp).toFixed(2)}`;
+    this.status.textContent = `idx = ${pt.idx}, T_amp = ${fmt2(Tamp)}`;
 
     const nMark = this.bifEl.data.length - 1;
     Plotly.restyle(this.bifEl, { x: [xs.map(() => Tamp)], y: [xs] }, [nMark]);
@@ -739,7 +754,7 @@ class ModelPanel {
     for (let i = 0; i < xs.length; i++) {
       const color = cols[preyStart + i] || cols[i] || "#333";
       labels.push(
-        `<span style="color:${color}"><i class="swatch"></i>x=${Number(xs[i]).toFixed(2)}</span>`
+        `<span style="color:${color}"><i class="swatch"></i>x=${fmt2(xs[i])}</span>`
       );
     }
     this.legend.innerHTML = labels.join("");
