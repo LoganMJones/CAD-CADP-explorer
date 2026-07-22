@@ -1034,7 +1034,7 @@ body.kbs-poster-page {
 }
 
 .results-interactive .plot {
-  min-height: 110px;
+  min-height: 130px;
   border: 1px solid rgba(10, 10, 10, 0.4);
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.88);
@@ -1048,8 +1048,8 @@ body.kbs-poster-page {
 }
 
 .bif.plot {
-  min-height: 280px;
-  max-height: min(48vh, 22rem);
+  min-height: 380px;
+  max-height: min(62vh, 30rem);
   flex: 1 1 auto;
   background: #b9d6f2;
 }
@@ -1087,7 +1087,7 @@ body.kbs-poster-page {
 }
 
 .side .plot {
-  min-height: 88px;
+  min-height: 115px;
 }
 
 .legend {
@@ -1127,12 +1127,12 @@ body.kbs-poster-page {
   }
 
   .bif.plot {
-    min-height: 200px;
-    max-height: min(38vh, 16rem);
+    min-height: 300px;
+    max-height: min(52vh, 24rem);
   }
 
   .side .plot {
-    min-height: 64px;
+    min-height: 92px;
   }
 
   .stab-cbar {
@@ -1148,12 +1148,12 @@ body.kbs-poster-page {
   }
 
   .bif.plot {
-    min-height: 180px;
-    max-height: min(34vh, 14rem);
+    min-height: 280px;
+    max-height: min(48vh, 22rem);
   }
 
   .side .plot {
-    min-height: 56px;
+    min-height: 84px;
   }
 
   .side {
