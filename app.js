@@ -588,6 +588,8 @@ class ModelPanel {
     this._nBound = 0;
     this._hasNiche = false;
     this._switching = false;
+    this._menuLabel = null;
+    this._sideS = null;
   }
 
   /** Force checkbox UI to match intended defaults (browsers may restore old form state). */
@@ -617,7 +619,11 @@ class ModelPanel {
     this.titleEl.textContent = this.data.predator ? "Predator present" : "Predator absent";
   }
 
-  fillMenu() {
+  fillMenu(preferLabel) {
+    const want =
+      preferLabel ||
+      this._menuLabel ||
+      this.data.menu.find((m) => m.branch === this.branchIdx)?.label;
     this.menu.innerHTML = "";
     this.data.menu.forEach((m) => {
       const opt = document.createElement("option");
@@ -625,10 +631,12 @@ class ModelPanel {
       opt.textContent = m.label;
       this.menu.appendChild(opt);
     });
-    if (this.data.menu.length) {
-      this.branchIdx = this.data.menu[0].branch;
-      this.menu.value = String(this.branchIdx);
-    }
+    if (!this.data.menu.length) return;
+    const match = want ? this.data.menu.find((m) => m.label === want) : null;
+    const pick = match || this.data.menu[0];
+    this.branchIdx = pick.branch;
+    this.menu.value = String(this.branchIdx);
+    this._menuLabel = pick.label;
   }
 
   currentBranch() {
@@ -637,6 +645,21 @@ class ModelPanel {
 
   currentPoint() {
     return this.currentBranch().points[this.pointIdx];
+  }
+
+  nearestPointIndex(br, Tamp) {
+    if (!br || !br.points || !br.points.length) return 0;
+    if (!Number.isFinite(Number(Tamp))) return Math.min(this.pointIdx, br.points.length - 1);
+    let best = 0;
+    let bestD = Infinity;
+    for (let i = 0; i < br.points.length; i++) {
+      const d = Math.abs(Number(br.points[i].Tamp) - Number(Tamp));
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    return best;
   }
 
   async init() {
@@ -660,7 +683,10 @@ class ModelPanel {
       });
     }
     this.menu.addEventListener("change", () => {
-      this.setBranch(Number(this.menu.value), true);
+      const bi = Number(this.menu.value);
+      const entry = this.data.menu.find((m) => m.branch === bi);
+      if (entry) this._menuLabel = entry.label;
+      this.setBranch(bi, true);
     });
     this.slider.addEventListener("input", () => {
       this._pendingIdx = Number(this.slider.value);
@@ -685,16 +711,45 @@ class ModelPanel {
     this._switching = true;
     this.status.textContent = "switching…";
     try {
+      let keepTamp = null;
+      try {
+        keepTamp = this.currentPoint().Tamp;
+      } catch (_) {
+        /* ignore */
+      }
+      const keepLabel = this._menuLabel;
+      const bifRanges = this.captureBifRanges();
+
       this.data = next;
       this.syncModelTitle();
-      this.fillMenu();
-      this._bifReady = false;
-      this._sidesReady = false;
-      await Promise.all([this.drawBif(), this.initSidePlots()]);
+      this.fillMenu(keepLabel);
+
+      // Same S_max → keep side-plot traces; only rebuild bif curves
+      const rebuildSides = !this._sidesReady || this._sideS !== this.data.S_max;
+      await this.drawBif(bifRanges);
+      if (rebuildSides) {
+        await this.initSidePlots();
+      } else {
+        const xt = axisTicksDigits2(0, this.data.tau ?? 10, 5);
+        const yt = axisTicksDigits2(0, this.data.Rtot, 5);
+        Plotly.relayout(this.linEl, {
+          "xaxis.tickmode": xt.tickmode,
+          "xaxis.tickvals": xt.tickvals,
+          "xaxis.ticktext": xt.ticktext,
+          "yaxis.tickmode": yt.tickmode,
+          "yaxis.tickvals": yt.tickvals,
+          "yaxis.ticktext": yt.ticktext,
+          "yaxis.range": [0, this.data.Rtot],
+        });
+        Plotly.relayout(this.logEl, {
+          "xaxis.tickmode": xt.tickmode,
+          "xaxis.tickvals": xt.tickvals,
+          "xaxis.ticktext": xt.ticktext,
+        });
+      }
       this.applyVisibility();
-      this.setBranch(this.branchIdx, true);
+      this.setBranchNear(this.branchIdx, keepTamp);
       this.syncTickLabels();
-      this.status.textContent = predator ? "predator present" : "predator absent";
     } catch (err) {
       console.error(err);
       this.status.textContent = `error: ${err.message}`;
@@ -703,7 +758,15 @@ class ModelPanel {
     }
   }
 
-  async drawBif() {
+  captureBifRanges() {
+    if (!this._bifReady || !this.bifEl.layout) return null;
+    const x = this.bifEl.layout.xaxis && this.bifEl.layout.xaxis.range;
+    const y = this.bifEl.layout.yaxis && this.bifEl.layout.yaxis.range;
+    if (!x && !y) return null;
+    return { x: x && x.slice(), y: y && y.slice() };
+  }
+
+  async drawBif(keepRanges) {
     const { traces, hasNiche, nGuide, nBound, layerVis } = bifTraces(
       this.data,
       this.layersOn,
@@ -722,7 +785,7 @@ class ModelPanel {
       },
       xaxis: {
         title: axisTitle("Amplitude, T_amp", 13),
-        range: ax.xlim,
+        range: (keepRanges && keepRanges.x) || ax.xlim,
         tickvals: [0, 5, 10, 15, 20, 24],
         tickformat: ".2f",
         hoverformat: ".2f",
@@ -736,7 +799,7 @@ class ModelPanel {
       },
       yaxis: {
         title: axisTitle("Trait, x", 13),
-        range: ax.ylim,
+        range: (keepRanges && keepRanges.y) || ax.ylim,
         tickvals: [-24, -20, -15, -10, -5, 0, 5, 10, 15, 20, 24],
         tickformat: ".2f",
         hoverformat: ".2f",
@@ -759,7 +822,11 @@ class ModelPanel {
     if (isMobileLayout()) {
       layout.margin = { t: 36, r: 10, b: 40, l: 36 };
     }
-    await Plotly.newPlot(this.bifEl, traces, layout, BIF_PLOT_CFG);
+    if (this._bifReady) {
+      await Plotly.react(this.bifEl, traces, layout, BIF_PLOT_CFG);
+    } else {
+      await Plotly.newPlot(this.bifEl, traces, layout, BIF_PLOT_CFG);
+    }
     this._bifReady = true;
   }
 
@@ -865,6 +932,7 @@ class ModelPanel {
       ),
       Plotly.newPlot(this.fitEl, fitTraces, fitLayout, PLOT_CFG),
     ]);
+    this._sideS = S;
     this._sidesReady = true;
   }
 
@@ -876,6 +944,25 @@ class ModelPanel {
     if (resetPoint) this.pointIdx = 0;
     this.pointIdx = Math.min(this.pointIdx, br.points.length - 1);
     this.slider.value = String(this.pointIdx);
+    const entry = this.data.menu.find((m) => m.branch === bi);
+    if (entry) this._menuLabel = entry.label;
+    this.updatePoint();
+  }
+
+  /** Keep community label + nearest Tamp when swapping models. */
+  setBranchNear(bi, Tamp) {
+    if (!this.data.branches[bi]) {
+      bi = this.data.menu[0] ? this.data.menu[0].branch : 0;
+    }
+    this.branchIdx = bi;
+    const br = this.currentBranch();
+    this.slider.min = 0;
+    this.slider.max = Math.max(0, br.points.length - 1);
+    this.pointIdx = this.nearestPointIndex(br, Tamp);
+    this.menu.value = String(this.branchIdx);
+    this.slider.value = String(this.pointIdx);
+    const entry = this.data.menu.find((m) => m.branch === this.branchIdx);
+    if (entry) this._menuLabel = entry.label;
     this.updatePoint();
   }
 
