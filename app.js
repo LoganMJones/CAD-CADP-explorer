@@ -455,6 +455,70 @@ function fmt2(v) {
   return n.toFixed(2);
 }
 
+/**
+ * Compact two-digit labels for densities: 10, 1.0, .38
+ * (2 significant figures; drop leading 0 before the decimal when |v| < 1).
+ */
+function fmtDigits2(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return "—";
+  if (n === 0) return "0";
+  const sign = n < 0 ? "-" : "";
+  const a = Math.abs(n);
+  const g = Number(a.toPrecision(2));
+  if (g >= 10) {
+    const r = Math.round(g);
+    if (Math.abs(g - r) <= Math.max(1e-9, 1e-6 * Math.abs(r))) return sign + String(r);
+    return sign + String(g);
+  }
+  if (g >= 1) return sign + g.toFixed(1);
+  let s = g.toPrecision(2);
+  if (s.startsWith("0.")) s = s.slice(1);
+  return sign + s;
+}
+
+function niceTickVals(min, max, count = 5) {
+  const lo = Number(min);
+  const hi = Number(max);
+  if (!Number.isFinite(lo) || !Number.isFinite(hi)) return [0];
+  if (hi === lo) return [lo];
+  const span = hi - lo;
+  const raw = span / Math.max(1, count - 1);
+  const mag = Math.pow(10, Math.floor(Math.log10(Math.abs(raw) || 1)));
+  const norm = raw / mag;
+  let step = mag;
+  if (norm >= 5) step = 5 * mag;
+  else if (norm >= 2) step = 2 * mag;
+  else step = mag;
+  const start = Math.ceil(lo / step - 1e-12) * step;
+  const vals = [];
+  for (let x = start; x <= hi + step * 1e-9; x += step) {
+    const v = Math.abs(x) < step * 1e-10 ? 0 : Number(x.toPrecision(8));
+    vals.push(v);
+    if (vals.length > 12) break;
+  }
+  if (!vals.length || vals[0] > lo + step * 0.05) vals.unshift(lo);
+  if (vals[vals.length - 1] < hi - step * 0.05) vals.push(hi);
+  return vals;
+}
+
+function axisTicksDigits2(min, max, count = 5) {
+  const tickvals = niceTickVals(min, max, count);
+  return {
+    tickmode: "array",
+    tickvals,
+    ticktext: tickvals.map(fmtDigits2),
+    tickformat: null,
+    hoverformat: null,
+  };
+}
+
+function applyDensityAxisFormats(layout, tMax, yMin, yMax) {
+  Object.assign(layout.xaxis, axisTicksDigits2(0, tMax, 5));
+  Object.assign(layout.yaxis, axisTicksDigits2(yMin, yMax, 5));
+  return layout;
+}
+
 function sideLayout(title, xTitle, yTitle, yType) {
   return applyTickVisibility({
     margin: { t: 34, r: 16, b: 52, l: 62 },
@@ -734,8 +798,13 @@ class ModelPanel {
       },
     ];
     const linLayout = sideLayout("Density", "Time, t", "Density, n", "linear");
-    linLayout.yaxis.range = [0, this.data.Rtot];
+    const Rtot = this.data.Rtot;
+    linLayout.yaxis.range = [0, Rtot];
+    applyDensityAxisFormats(linLayout, this.data.tau ?? 10, 0, Rtot);
+
     const logLayout = sideLayout("Density (log)", "Time, t", "log Density, n", "linear");
+    applyDensityAxisFormats(logLayout, this.data.tau ?? 10, -6, 5);
+
     const fitLayout = sideLayout("Fitness landscape", "Trait, x", "Fitness, λ", "linear");
     await Promise.all([
       Plotly.newPlot(
@@ -815,6 +884,30 @@ class ModelPanel {
       { x: idxs.map(() => t), y: yLin, "line.color": lineColors },
       idxs
     );
+
+    // Keep log-density tick labels in the compact two-digit style as the range shifts
+    let logMin = Infinity;
+    let logMax = -Infinity;
+    for (const row of yLog) {
+      if (!row) continue;
+      for (const v of row) {
+        if (!Number.isFinite(v)) continue;
+        if (v < logMin) logMin = v;
+        if (v > logMax) logMax = v;
+      }
+    }
+    if (Number.isFinite(logMin) && Number.isFinite(logMax)) {
+      const pad = Math.max(0.15 * (logMax - logMin), 0.25);
+      const y0 = logMin - pad;
+      const y1 = logMax + pad;
+      const ticks = axisTicksDigits2(y0, y1, 5);
+      Plotly.relayout(this.logEl, {
+        "yaxis.range": [y0, y1],
+        "yaxis.tickmode": ticks.tickmode,
+        "yaxis.tickvals": ticks.tickvals,
+        "yaxis.ticktext": ticks.ticktext,
+      });
+    }
 
     const xFit = pt.x_fit;
     const traitCols = traitMemberColors(xs);
