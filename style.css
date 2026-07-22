@@ -78,9 +78,14 @@ body.kbs-poster-page {
 
 .kbs-chrome__home {
   font-weight: 700;
-  color: #ffe6a8;
+  color: #b9d6f2;
   order: -1;
   margin-right: auto;
+}
+
+.kbs-chrome__home:hover,
+.kbs-chrome__home:focus-visible {
+  color: #fff;
 }
 
 .section-jump {
@@ -103,8 +108,8 @@ body.kbs-poster-page {
   flex: 0 0 auto;
   font-weight: 700;
   color: #142033 !important;
-  background: #ffe6a8 !important;
-  border: 1px solid rgba(255, 230, 168, 0.95) !important;
+  background: #b9d6f2 !important;
+  border: 1px solid rgba(185, 214, 242, 0.95) !important;
   border-radius: 999px;
   padding: 0.25rem 0.7rem;
   text-decoration: none;
@@ -113,7 +118,7 @@ body.kbs-poster-page {
 
 .section-jump__home:hover,
 .section-jump__home:focus-visible {
-  background: #fff0c2 !important;
+  background: #d7e8f8 !important;
   color: #0a1220 !important;
 }
 
@@ -161,9 +166,9 @@ body.kbs-poster-page {
   min-width: 3.1rem;
   padding: 0.55rem 0.85rem;
   border-radius: 999px;
-  border: 1.5px solid rgba(255, 230, 168, 0.85);
-  background: #ffe6a8;
-  color: #142033;
+  border: 1.5px solid rgba(185, 214, 242, 0.9);
+  background: #2f5d8a;
+  color: #e8f1fb;
   font-family: "Source Sans 3", system-ui, sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
@@ -183,9 +188,9 @@ body.kbs-poster-page {
 
 .back-top:hover,
 .back-top:focus-visible {
-  color: #0a1220;
-  background: #fff0c2;
-  border-color: #ffe6a8;
+  color: #142033;
+  background: #b9d6f2;
+  border-color: #b9d6f2;
 }
 
 .kbs-wip {
