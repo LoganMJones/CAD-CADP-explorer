@@ -104,9 +104,44 @@ function stabilityHeatmap(band, ylim) {
   };
 }
 
-/** Uninhabitable funnel overlay — Makie contourf(λ < 0 → col_no). */
+/** Soften a Tamp-major mask so the niche edge isn't blocky. */
+function softenMask(rows, passes = 4) {
+  let cur = rows.map((r) => Float64Array.from(r, (v) => (Number(v) ? 1 : 0)));
+  for (let p = 0; p < passes; p++) {
+    const next = cur.map((r) => new Float64Array(r.length));
+    for (let i = 0; i < cur.length; i++) {
+      for (let j = 0; j < cur[i].length; j++) {
+        let s = 0;
+        let c = 0;
+        for (let di = -1; di <= 1; di++) {
+          for (let dj = -1; dj <= 1; dj++) {
+            const ii = i + di;
+            const jj = j + dj;
+            if (ii >= 0 && ii < cur.length && jj >= 0 && jj < cur[i].length) {
+              s += cur[ii][jj];
+              c++;
+            }
+          }
+        }
+        next[i][j] = s / c;
+      }
+    }
+    cur = next;
+  }
+  return cur;
+}
+
+function nicheField(niche) {
+  if (!niche) return null;
+  if (niche.soft) return niche.soft;
+  if (niche.uninhab) return softenMask(niche.uninhab, 5);
+  return null;
+}
+
+/** Uninhabitable funnel — soft edge (not binary blocks). */
 function nicheHeatmap(niche, nicheColor) {
-  if (!niche || !niche.uninhab) return null;
+  const field = nicheField(niche);
+  if (!field || !niche.T || !niche.x) return null;
   const nT = niche.T.length;
   const nX = niche.x.length;
   // Stored Tamp-major rows; Plotly wants z[iy][iT]
@@ -114,25 +149,72 @@ function nicheHeatmap(niche, nicheColor) {
   for (let ix = 0; ix < nX; ix++) {
     const row = new Array(nT);
     for (let iT = 0; iT < nT; iT++) {
-      row[iT] = niche.uninhab[iT][ix];
+      row[iT] = field[iT][ix];
     }
     z[ix] = row;
   }
+  // Parse niche gray → rgba stops for a smooth fade into uninhabitable
+  const solid = nicheColor.startsWith("#")
+    ? nicheColor
+    : nicheColor.replace(/^rgb\(/, "rgba(").includes("rgba")
+      ? nicheColor
+      : nicheColor.replace("rgb(", "rgba(").replace(")", ",1)");
+  const toRgba = (a) => {
+    if (solid.startsWith("#") && solid.length === 7) {
+      const r = parseInt(solid.slice(1, 3), 16);
+      const g = parseInt(solid.slice(3, 5), 16);
+      const b = parseInt(solid.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+    if (solid.startsWith("rgb(")) return solid.replace("rgb(", "rgba(").replace(")", `,${a})`);
+    if (solid.startsWith("rgba(")) return solid.replace(/,\s*[\d.]+\)$/, `,${a})`);
+    return `rgba(77,92,110,${a})`;
+  };
   return {
     type: "heatmap",
     x: niche.T,
     y: niche.x,
     z,
     colorscale: [
-      [0, "rgba(0,0,0,0)"],
-      [1, nicheColor],
+      [0.0, toRgba(0)],
+      [0.25, toRgba(0)],
+      [0.45, toRgba(0.35)],
+      [0.65, toRgba(0.75)],
+      [1.0, toRgba(1)],
     ],
     zmin: 0,
     zmax: 1,
+    zsmooth: "best",
     showscale: false,
     hoverinfo: "skip",
     opacity: 1,
   };
+}
+
+/** Habitable trait interval at Tamp T (null if none). */
+function habitableYAtT(niche, T) {
+  const field = nicheField(niche);
+  if (!field || !niche.T || !niche.x) return null;
+  let iT = 0;
+  let best = Infinity;
+  for (let i = 0; i < niche.T.length; i++) {
+    const d = Math.abs(niche.T[i] - T);
+    if (d < best) {
+      best = d;
+      iT = i;
+    }
+  }
+  const row = field[iT];
+  let lo = -1;
+  let hi = -1;
+  for (let ix = 0; ix < row.length; ix++) {
+    if (row[ix] < 0.5) {
+      if (lo < 0) lo = ix;
+      hi = ix;
+    }
+  }
+  if (lo < 0) return null;
+  return [niche.x[lo], niche.x[hi]];
 }
 
 function guideTraces(data, show) {
@@ -167,17 +249,20 @@ function guideTraces(data, show) {
 }
 
 function boundaryTraces(data, show) {
-  const ylim = data.axis.ylim;
-  return (data.boundaries || []).map((x) => ({
-    type: "scatter",
-    mode: "lines",
-    x: [x, x],
-    y: ylim,
-    line: { color: "rgba(0,0,0,0.85)", width: 1.5, dash: "dot" },
-    hoverinfo: "skip",
-    showlegend: false,
-    visible: show,
-  }));
+  // Clip dashed density transitions to the habitable funnel (not into uninhabitable).
+  return (data.boundaries || []).map((T) => {
+    const yr = habitableYAtT(data.niche, T) || data.axis.ylim;
+    return {
+      type: "scatter",
+      mode: "lines",
+      x: [T, T],
+      y: yr,
+      line: { color: "rgba(0,0,0,0.85)", width: 1.5, dash: "dot" },
+      hoverinfo: "skip",
+      showlegend: false,
+      visible: show,
+    };
+  });
 }
 
 function bifTraces(data, layersOn, annotOn) {
@@ -287,8 +372,8 @@ class ModelPanel {
     this.linEl = root.querySelector('[data-plot="cycle-lin"]');
     this.fitEl = root.querySelector('[data-plot="fit"]');
     this.layersOn = { stable: true, dyn_unstable: true, inv_unstable: true };
-    // Match compare plot: faint grid + density transitions on
-    this.annotOn = { guides: true, boundaries: true };
+    // Guides on; density-transition dashes off by default
+    this.annotOn = { guides: true, boundaries: false };
     this.branchIdx = 0;
     this.pointIdx = 0;
     this._bifReady = false;
