@@ -88,9 +88,9 @@ body.kbs-poster-page {
   top: 0;
   z-index: 40;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.35rem 0.55rem;
+  gap: 0.55rem;
   padding: 0.45rem 0.85rem;
   background: rgba(18, 28, 48, 0.94);
   border-bottom: 1px solid rgba(201, 214, 232, 0.22);
@@ -99,7 +99,33 @@ body.kbs-poster-page {
   backdrop-filter: blur(8px);
 }
 
-.section-jump a {
+.section-jump__home {
+  flex: 0 0 auto;
+  font-weight: 700;
+  color: #142033 !important;
+  background: #ffe6a8 !important;
+  border: 1px solid rgba(255, 230, 168, 0.95) !important;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.section-jump__home:hover,
+.section-jump__home:focus-visible {
+  background: #fff0c2 !important;
+  color: #0a1220 !important;
+}
+
+.section-jump__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  min-width: 0;
+}
+
+.section-jump__links a {
   color: #d7e5f5;
   text-decoration: none;
   padding: 0.2rem 0.45rem;
@@ -107,26 +133,20 @@ body.kbs-poster-page {
   border: 1px solid transparent;
 }
 
-.section-jump a:hover,
-.section-jump a:focus-visible {
+.section-jump__links a:hover,
+.section-jump__links a:focus-visible {
   color: #fff;
   border-color: rgba(185, 214, 242, 0.55);
   background: rgba(185, 214, 242, 0.12);
 }
 
-.section-jump__home {
-  font-weight: 700;
-  color: #ffe6a8 !important;
-  border-color: rgba(255, 230, 168, 0.45) !important;
-  margin-right: 0.35rem;
-}
-
 /* Keep section titles visible under the sticky jump bar */
 .poster-box__header,
 .model-panel,
+.model-head h3,
 .poster-panel,
 #poster {
-  scroll-margin-top: 4.75rem;
+  scroll-margin-top: 5.5rem;
 }
 
 .back-top {
@@ -139,11 +159,11 @@ body.kbs-poster-page {
   align-items: center;
   justify-content: center;
   min-width: 3.1rem;
-  padding: 0.55rem 0.75rem;
+  padding: 0.55rem 0.85rem;
   border-radius: 999px;
-  border: 1.5px solid rgba(185, 214, 242, 0.7);
-  background: rgba(18, 28, 48, 0.92);
-  color: #e8f1fb;
+  border: 1.5px solid rgba(255, 230, 168, 0.85);
+  background: #ffe6a8;
+  color: #142033;
   font-family: "Source Sans 3", system-ui, sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
@@ -163,7 +183,8 @@ body.kbs-poster-page {
 
 .back-top:hover,
 .back-top:focus-visible {
-  color: #fff;
+  color: #0a1220;
+  background: #fff0c2;
   border-color: #ffe6a8;
 }
 

@@ -34,9 +34,12 @@
       openPanel(id === "references" ? "bibliography" : id);
       return;
     }
-    // Prefer the section box so the colored header lands under the sticky nav
+    // Prefer the visible section title under the sticky nav
     var section = el.closest(".poster-box, .model-panel, .poster-panel") || el;
-    var target = section.querySelector(".poster-box__header") || section;
+    var target =
+      section.querySelector(".poster-box__header") ||
+      section.querySelector(".model-head h3") ||
+      section;
     scrollToEl(target);
   }
 
