@@ -38,6 +38,55 @@ const CADP_POSTER_COLORS = [
   "#e0a3f0",
 ];
 
+// Poster seaborn_density_colors — ColorSchemes.seaborn_dark, skip gold (index 9)
+const POSTER_DENSITY_COLORS = [
+  "#001c7f",
+  "#b1400d",
+  "#12711c",
+  "#8c0800",
+  "#591e71",
+  "#592f0d",
+  "#a23582",
+  "#3c3c3c",
+  "#006374",
+];
+
+function posterSpeciesColors(S_max, predator) {
+  const n = Math.max(1, S_max | 0);
+  if (predator) {
+    const out = ["#000000"];
+    for (let i = 0; i < n - 1; i++) {
+      out.push(POSTER_DENSITY_COLORS[i % POSTER_DENSITY_COLORS.length]);
+    }
+    return out;
+  }
+  return Array.from({ length: n }, (_, i) => POSTER_DENSITY_COLORS[i % POSTER_DENSITY_COLORS.length]);
+}
+
+/** Prey trait colors ordered left→right by x (poster trait_member_colors). */
+function traitMemberColors(xs) {
+  const S = xs.length;
+  const order = xs
+    .map((x, i) => ({ x: Number(x), i }))
+    .sort((a, b) => a.x - b.x)
+    .map((o) => o.i);
+  const cols = new Array(S);
+  order.forEach((speciesIdx, rank) => {
+    cols[speciesIdx] = POSTER_DENSITY_COLORS[rank % POSTER_DENSITY_COLORS.length];
+  });
+  return cols;
+}
+
+function applyPosterColors(data) {
+  if (data.model === "cadp") {
+    data.branches.forEach((br, i) => {
+      if (CADP_POSTER_COLORS[i]) br.color = CADP_POSTER_COLORS[i];
+    });
+  }
+  // Replace export managua yellows with poster Methods density / trait palette
+  data.species_colors = posterSpeciesColors(data.S_max, !!data.predator);
+}
+
 function isFiniteNum(v) {
   return typeof v === "number" && Number.isFinite(v);
 }
@@ -72,13 +121,6 @@ async function loadGzipJson(url) {
   const ds = new DecompressionStream("gzip");
   const text = await new Response(res.body.pipeThrough(ds)).text();
   return JSON.parse(text);
-}
-
-function applyPosterColors(data) {
-  if (data.model !== "cadp") return;
-  data.branches.forEach((br, i) => {
-    if (CADP_POSTER_COLORS[i]) br.color = CADP_POSTER_COLORS[i];
-  });
 }
 
 function paletteOf(data) {
@@ -702,7 +744,7 @@ class ModelPanel {
     const pt = this.currentPoint();
     const Tamp = pt.Tamp;
     const xs = pt.xs.filter((v) => Number.isFinite(v));
-    const cols = this.data.species_colors;
+    const densCols = this.data.species_colors;
     const t = br.t;
     const S = this.data.S_max;
 
@@ -713,7 +755,9 @@ class ModelPanel {
 
     const yLog = new Array(S);
     const yLin = new Array(S);
+    const lineColors = new Array(S);
     for (let s = 0; s < S; s++) {
+      lineColors[s] = densCols[s] || "#333";
       const row = pt.n[s];
       if (!row) {
         yLog[s] = t.map(() => null);
@@ -733,10 +777,19 @@ class ModelPanel {
       yLin[s] = linRow;
     }
     const idxs = Array.from({ length: S }, (_, i) => i);
-    Plotly.restyle(this.logEl, { x: idxs.map(() => t), y: yLog }, idxs);
-    Plotly.restyle(this.linEl, { x: idxs.map(() => t), y: yLin }, idxs);
+    Plotly.restyle(
+      this.logEl,
+      { x: idxs.map(() => t), y: yLog, "line.color": lineColors },
+      idxs
+    );
+    Plotly.restyle(
+      this.linEl,
+      { x: idxs.map(() => t), y: yLin, "line.color": lineColors },
+      idxs
+    );
 
     const xFit = pt.x_fit;
+    const traitCols = traitMemberColors(xs);
     Plotly.restyle(
       this.fitEl,
       {
@@ -745,14 +798,14 @@ class ModelPanel {
       },
       [0, 1, 2]
     );
+    Plotly.restyle(this.fitEl, { "marker.color": [traitCols], "marker.size": 9 }, [1]);
 
-    const preyStart = this.data.predator ? 1 : 0;
     const labels = [];
     if (this.data.predator) {
-      labels.push(`<span style="color:${cols[0]}"><i class="swatch"></i>predator</span>`);
+      labels.push(`<span style="color:#000000"><i class="swatch"></i>predator</span>`);
     }
     for (let i = 0; i < xs.length; i++) {
-      const color = cols[preyStart + i] || cols[i] || "#333";
+      const color = traitCols[i] || "#333";
       labels.push(
         `<span style="color:${color}"><i class="swatch"></i>x=${fmt2(xs[i])}</span>`
       );
