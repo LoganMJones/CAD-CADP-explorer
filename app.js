@@ -619,7 +619,7 @@ class ModelPanel {
     this.titleEl.textContent = this.data.predator ? "Predator present" : "Predator absent";
   }
 
-  fillMenu(preferLabel) {
+  fillMenu(preferLabel, preferTamp) {
     const want =
       preferLabel ||
       this._menuLabel ||
@@ -633,10 +633,63 @@ class ModelPanel {
     });
     if (!this.data.menu.length) return;
     const match = want ? this.data.menu.find((m) => m.label === want) : null;
-    const pick = match || this.data.menu[0];
+    const pick =
+      match ||
+      this.nearestStableMenuEntry(preferTamp) ||
+      this.data.menu[0];
     this.branchIdx = pick.branch;
     this.menu.value = String(this.branchIdx);
     this._menuLabel = pick.label;
+  }
+
+  /** Stable Tamp extent for a branch (from stable polylines), or null if none. */
+  stableTampRange(br) {
+    const segs = (br && br.polylines && br.polylines.stable) || [];
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const seg of segs) {
+      const Ts = (seg && seg.T) || [];
+      for (const t of Ts) {
+        if (!Number.isFinite(Number(t))) continue;
+        const v = Number(t);
+        if (v < lo) lo = v;
+        if (v > hi) hi = v;
+      }
+    }
+    if (!Number.isFinite(lo) || !Number.isFinite(hi)) return null;
+    return { lo, hi, mid: 0.5 * (lo + hi) };
+  }
+
+  /**
+   * When a branch label is missing on the other model, pick the menu entry
+   * whose stable Tamp interval is nearest to preferTamp (0 if Tamp lies inside).
+   */
+  nearestStableMenuEntry(preferTamp) {
+    const Tamp = Number(preferTamp);
+    const hasT = Number.isFinite(Tamp);
+    let best = null;
+    let bestD = Infinity;
+    let bestMid = Infinity;
+    for (const m of this.data.menu) {
+      const br = this.data.branches[m.branch];
+      const range = this.stableTampRange(br);
+      if (!range) continue;
+      let d;
+      if (!hasT) {
+        d = Math.abs(range.mid);
+      } else if (Tamp >= range.lo && Tamp <= range.hi) {
+        d = 0;
+      } else {
+        d = Math.min(Math.abs(Tamp - range.lo), Math.abs(Tamp - range.hi));
+      }
+      const midDist = hasT ? Math.abs(range.mid - Tamp) : Math.abs(range.mid);
+      if (d < bestD - 1e-12 || (Math.abs(d - bestD) <= 1e-12 && midDist < bestMid)) {
+        bestD = d;
+        bestMid = midDist;
+        best = m;
+      }
+    }
+    return best;
   }
 
   currentBranch() {
@@ -722,7 +775,7 @@ class ModelPanel {
 
       this.data = next;
       this.syncModelTitle();
-      this.fillMenu(keepLabel);
+      this.fillMenu(keepLabel, keepTamp);
 
       // Same S_max → keep side-plot traces; only rebuild bif curves
       const rebuildSides = !this._sidesReady || this._sideS !== this.data.S_max;
