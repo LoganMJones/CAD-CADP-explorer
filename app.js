@@ -212,80 +212,35 @@ function lerpRgb(a, b, t) {
 }
 
 /**
- * Background: light-blue structural-stability field + gray uninhabitable funnel.
- * Habitable cells use softness in [0,1] (light→dark blue). Uninhabitable uses
- * a separate near-solid gray encoded just above 1 so the funnel cannot wash
- * the plot to AXIS_BG charcoal.
+ * Uninhabitable funnel only (NaN gaps in the habitable region).
+ * Drawn above the stability stripes so Plotly does not have to alpha-composite.
  */
-function bifBackgroundHeatmap(data, pal) {
-  const band = data.stability_band;
-  const niche = data.niche;
+function nicheGrayHeatmap(niche, nicheColor) {
   const field = nicheField(niche);
-  const ylim = data.axis.ylim;
-  const light = pal.light || BAND_LIGHT;
-  const dark = pal.dark || BAND_DARK;
-  const nicheGray = pal.niche || AXIS_BG;
-
-  if (!band || !band.T || !band.softness) {
-    return {
-      type: "heatmap",
-      x: data.axis.xlim,
-      y: ylim,
-      z: [
-        [0, 0],
-        [0, 0],
-      ],
-      colorscale: [
-        [0, light],
-        [1, light],
-      ],
-      zmin: 0,
-      zmax: 1,
-      showscale: false,
-      hoverinfo: "skip",
-    };
-  }
-
-  // Prefer full-plot stability stripes when niche is missing
-  if (!field || !niche.T || !niche.x) return stabilityHeatmap(band, ylim, pal);
-
+  if (!field || !niche.T || !niche.x) return null;
   const nT = niche.T.length;
   const nX = niche.x.length;
-  const softT = band.T;
-  const softV = band.softness;
-  const softAt = new Float64Array(nT);
-  let j = 0;
-  for (let i = 0; i < nT; i++) {
-    const T = niche.T[i];
-    while (j < softT.length - 1 && Math.abs(softT[j + 1] - T) <= Math.abs(softT[j] - T)) j++;
-    softAt[i] = softV[j];
-  }
-
-  // Encode: 0..1 = stability blues; 1.15 = solid niche gray
   const EDGE = 0.5;
-  const Z_GRAY = 1.15;
   const z = new Array(nX);
   for (let ix = 0; ix < nX; ix++) {
     const row = new Array(nT);
     for (let iT = 0; iT < nT; iT++) {
-      const u = field[iT][ix];
-      row[iT] = u >= EDGE ? Z_GRAY : softAt[iT];
+      row[iT] = field[iT][ix] >= EDGE ? 1 : NaN;
     }
     z[ix] = row;
   }
-
+  const gray = nicheColor || AXIS_BG;
   return {
     type: "heatmap",
     x: niche.T,
     y: niche.x,
     z,
     colorscale: [
-      [0.0, light],
-      [1 / Z_GRAY, dark],
-      [1.0, nicheGray],
+      [0, gray],
+      [1, gray],
     ],
     zmin: 0,
-    zmax: Z_GRAY,
+    zmax: 1,
     showscale: false,
     hoverinfo: "skip",
     hoverongaps: false,
@@ -370,7 +325,11 @@ function boundaryTraces(data, show) {
 function bifTraces(data, layersOn, annotOn) {
   const pal = paletteOf(data);
   const traces = [];
-  traces.push(bifBackgroundHeatmap(data, pal));
+  // Full-frame light→dark blue stability stripes (always visible habitable field)
+  traces.push(stabilityHeatmap(data.stability_band, data.axis.ylim, pal));
+  const niche = nicheGrayHeatmap(data.niche, pal.niche);
+  const hasNiche = !!niche;
+  if (niche) traces.push(niche);
 
   const guide = guideTraces(data, annotOn.guides);
   const bounds = boundaryTraces(data, annotOn.boundaries);
@@ -427,6 +386,7 @@ function bifTraces(data, layersOn, annotOn) {
 
   return {
     traces,
+    hasNiche,
     nGuide: guide.length,
     nBound: bounds.length,
     layerVis,
@@ -515,6 +475,7 @@ class ModelPanel {
     this._pendingIdx = null;
     this._nGuide = 0;
     this._nBound = 0;
+    this._hasNiche = false;
   }
 
   /** Force checkbox UI to match intended defaults (browsers may restore old form state). */
@@ -591,11 +552,12 @@ class ModelPanel {
   }
 
   async drawBif() {
-    const { traces, nGuide, nBound, layerVis } = bifTraces(
+    const { traces, hasNiche, nGuide, nBound, layerVis } = bifTraces(
       this.data,
       this.layersOn,
       this.annotOn
     );
+    this._hasNiche = hasNiche;
     this._nGuide = nGuide;
     this._nBound = nBound;
     this._layerVis = layerVis;
@@ -634,8 +596,8 @@ class ModelPanel {
         fixedrange: false,
         tickfont: { size: 11 },
       },
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: POSTER_BLUE,
+      paper_bgcolor: POSTER_BLUE,
+      plot_bgcolor: BAND_LIGHT,
       showlegend: false,
       dragmode: "zoom",
       hovermode: "closest",
@@ -647,8 +609,9 @@ class ModelPanel {
 
   applyVisibility() {
     if (!this._bifReady) return;
-    // trace order: background heatmap + guides + boundaries + layers + marker
+    // trace order: stability + optional niche + guides + boundaries + layers + marker
     const vis = [true];
+    if (this._hasNiche) vis.push(true);
     for (let i = 0; i < this._nGuide; i++) vis.push(this.annotOn.guides);
     for (let i = 0; i < this._nBound; i++) vis.push(this.annotOn.boundaries);
     for (const layer of this._layerVis || []) vis.push(this.layersOn[layer]);
