@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5.8">
+  <link rel="stylesheet" href="style.css?v=5.9">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -182,22 +182,27 @@
         <h2 class="poster-box__header" id="results-h">Results</h2>
         <div class="poster-box__body results-interactive">
           <figure class="results-compare">
-            <img
-              src="https://loganjones.org/images/kbs-poster/bif_stable_compare.png?v=5"
-              alt="Community bifurcation diagrams comparing predator-absent (top) and predator-present (bottom) models across seasonal amplitude"
-              width="900"
-              height="1100"
-              loading="lazy"
-            >
+            <div class="results-compare__media">
+              <img
+                src="https://loganjones.org/images/kbs-poster/bif_stable_compare.png?v=5"
+                alt="Community bifurcation diagrams comparing predator-absent (top) and predator-present (bottom) models across seasonal amplitude"
+                width="900"
+                height="1100"
+                loading="lazy"
+              >
+            </div>
             <figcaption class="fig-cap results-lede">
               <strong>Fig. 4.</strong> Community bifurcation diagrams: evolutionarily
               stable community (ESC) trait values across seasonal amplitude
               <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
               Shading highlights structural stability: lighter represents a relatively wider range of environments
               over which the community persists.
+              Vertical dashed lines mark qualitative transitions (by eye) in species densities; the small intervals
+              between these dashed lines represent regions where species densities are quickly changing.
               Generated at fixed parameters
               <em>R</em><sub>tot</sub>&nbsp;=&nbsp;100 and τ&nbsp;=&nbsp;10
               (seasonal period), with <em>T</em><sub>amp</sub> explored on [0,&nbsp;24].
+              Use the interactive panels below to inspect the same communities branch by branch.
             </figcaption>
           </figure>
 
