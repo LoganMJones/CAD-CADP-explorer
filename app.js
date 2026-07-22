@@ -404,6 +404,50 @@ function axisTitle(text, fontSize = 11) {
   return { text, font: { size: fontSize, color: "#142033" }, standoff: 10 };
 }
 
+const MOBILE_MQ = window.matchMedia("(max-width: 960px)");
+
+function isMobileLayout() {
+  return MOBILE_MQ.matches;
+}
+
+/** Hide numeric tick labels on narrow screens (axis titles stay). */
+function applyTickVisibility(layout) {
+  const show = !isMobileLayout();
+  layout.xaxis = layout.xaxis || {};
+  layout.yaxis = layout.yaxis || {};
+  layout.xaxis.showticklabels = show;
+  layout.yaxis.showticklabels = show;
+  if (!show) {
+    // Recover space once numbers are gone
+    const m = layout.margin || {};
+    layout.margin = {
+      t: m.t ?? 34,
+      r: Math.min(m.r ?? 16, 10),
+      b: Math.min(m.b ?? 52, 36),
+      l: Math.min(m.l ?? 62, 36),
+    };
+  }
+  return layout;
+}
+
+function tickRelayoutPatch() {
+  const show = !isMobileLayout();
+  const patch = {
+    "xaxis.showticklabels": show,
+    "yaxis.showticklabels": show,
+  };
+  if (!show) {
+    patch["margin.r"] = 10;
+    patch["margin.b"] = 36;
+    patch["margin.l"] = 36;
+  } else {
+    patch["margin.r"] = 16;
+    patch["margin.b"] = 52;
+    patch["margin.l"] = 62;
+  }
+  return patch;
+}
+
 /** Always two digits after the decimal (no scientific notation). */
 function fmt2(v) {
   const n = Number(v);
@@ -412,7 +456,7 @@ function fmt2(v) {
 }
 
 function sideLayout(title, xTitle, yTitle, yType) {
-  return {
+  return applyTickVisibility({
     margin: { t: 34, r: 16, b: 52, l: 62 },
     title: {
       text: title,
@@ -449,7 +493,7 @@ function sideLayout(title, xTitle, yTitle, yType) {
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(255,255,255,0.72)",
     uirevision: title,
-  };
+  });
 }
 
 class ModelPanel {
@@ -603,8 +647,31 @@ class ModelPanel {
       hovermode: "closest",
       uirevision: "bif",
     };
+    applyTickVisibility(layout);
+    if (isMobileLayout()) {
+      layout.margin = { t: 36, r: 10, b: 40, l: 36 };
+    }
     await Plotly.newPlot(this.bifEl, traces, layout, BIF_PLOT_CFG);
     this._bifReady = true;
+  }
+
+  syncTickLabels() {
+    if (!this._bifReady) return;
+    const show = !isMobileLayout();
+    const bifPatch = {
+      "xaxis.showticklabels": show,
+      "yaxis.showticklabels": show,
+      "margin.r": show ? 20 : 10,
+      "margin.b": show ? 58 : 40,
+      "margin.l": show ? 64 : 36,
+      "margin.t": show ? 44 : 36,
+    };
+    const sidePatch = tickRelayoutPatch();
+    Plotly.relayout(this.bifEl, bifPatch);
+    if (!this._sidesReady) return;
+    Plotly.relayout(this.logEl, sidePatch);
+    Plotly.relayout(this.linEl, sidePatch);
+    Plotly.relayout(this.fitEl, sidePatch);
   }
 
   applyVisibility() {
@@ -793,16 +860,27 @@ async function bootPanel(el) {
 
 async function main() {
   const panels = [...document.querySelectorAll(".model-panel")];
+  const live = [];
   await Promise.all(
     panels.map(async (el) => {
       try {
-        await bootPanel(el);
+        const panel = await bootPanel(el);
+        if (panel) live.push(panel);
       } catch (err) {
         console.error(err);
         el.querySelector(".status").textContent = `error: ${err.message}`;
       }
     })
   );
+
+  function syncAllTicks() {
+    live.forEach((p) => p.syncTickLabels());
+  }
+  if (typeof MOBILE_MQ.addEventListener === "function") {
+    MOBILE_MQ.addEventListener("change", syncAllTicks);
+  } else if (typeof MOBILE_MQ.addListener === "function") {
+    MOBILE_MQ.addListener(syncAllTicks);
+  }
 }
 
 main();
