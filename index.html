@@ -51,8 +51,7 @@
       <a href="#bg-h">Background</a>
       <a href="#methods-h">Methods</a>
       <a href="#results-h">Results</a>
-      <a href="#panel-cad">Predator absent</a>
-      <a href="#panel-cadp">Predator present</a>
+      <a href="#panel-explore">Interactive</a>
       <a href="#div-h">Diversity</a>
       <a href="#discussion-h">Discussion</a>
       <a href="#ack-h">Acknowledgments</a>
@@ -170,56 +169,24 @@
           <div class="explore-help" aria-label="How to use the interactive diagrams">
             <h3>How to explore</h3>
             <p class="explore-help__lede">
-              Interactive versions of Fig. 4 — use the panels below to inspect branches, densities, and fitness landscapes.
+              Interactive version of Fig. 4 — toggle predator absent vs present, then inspect branches, densities, and fitness landscapes.
             </p>
             <ul>
+              <li><strong>Predator</strong> switches the whole bifurcation between predator absent and predator present (Fig. 4 top ↔ bottom).</li>
               <li><strong>Hover</strong> a curve to read <em>T</em><sub>amp</sub>, trait <em>x</em>, and stability class.</li>
               <li><strong>Zoom</strong> by dragging a box on the bif plot (or scroll); use the mode-bar home icon to reset.</li>
               <li><strong>Branch</strong> picks which community continuation to follow; <strong>Point</strong> slides along that branch.</li>
               <li>Right-hand panels update with the selected point: seasonal densities (log &amp; linear) and the fitness landscape λ(<em>x</em>).</li>
               <li>Background shading is structural stability; the dark outer funnel is the empty-niche (uninhabitable) region.</li>
-              <li>Toggles add dynamically unstable / invasion-unstable segments, trait guides, or density-transition dashes.</li>
+              <li>Other toggles add dynamically unstable / invasion-unstable segments, trait guides, or density-transition dashes.</li>
             </ul>
           </div>
 
-          <section id="panel-cad" class="model-panel" data-model="cad">
+          <section id="panel-explore" class="model-panel">
             <div class="model-head">
-              <h3>Predator absent</h3>
+              <h3 class="model-title">Predator absent</h3>
               <div class="toggles" aria-label="Display layers">
-                <label title="Dynamically + invasion stable (thick curves)."><input type="checkbox" data-layer="stable" checked /> Stable</label>
-                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" /> Dyn. unstable</label>
-                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" /> Invasion unstable</label>
-                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" /> Trait guides</label>
-                <label title="Dashed density-regime transitions (clipped to habitable region)."><input type="checkbox" data-annot="boundaries" /> Density transitions</label>
-              </div>
-              <div class="controls">
-                <label>Branch <select class="branch-menu"></select></label>
-                <label class="slider-wrap">Point <input type="range" class="point-slider" min="0" max="0" value="0" /></label>
-                <span class="status">loading…</span>
-              </div>
-            </div>
-            <div class="stack">
-              <div class="bif-wrap">
-                <div class="bif plot" data-plot="bif"></div>
-                <div class="stab-cbar" aria-hidden="true">
-                  <div class="stab-cbar-bar"></div>
-                  <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
-                  <div class="stab-cbar-label">Structural stability</div>
-                </div>
-              </div>
-              <div class="side">
-                <div class="plot" data-plot="cycle-log"></div>
-                <div class="plot" data-plot="cycle-lin"></div>
-                <div class="plot" data-plot="fit"></div>
-                <div class="legend" data-legend></div>
-              </div>
-            </div>
-          </section>
-
-          <section id="panel-cadp" class="model-panel" data-model="cadp">
-            <div class="model-head">
-              <h3>Predator present</h3>
-              <div class="toggles" aria-label="Display layers">
+                <label title="Switch the whole diagram between predator absent (CAD) and predator present (CADP)."><input type="checkbox" data-model="predator" /> Predator</label>
                 <label title="Dynamically + invasion stable (thick curves)."><input type="checkbox" data-layer="stable" checked /> Stable</label>
                 <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" /> Dyn. unstable</label>
                 <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" /> Invasion unstable</label>
@@ -426,7 +393,7 @@
     </aside>
   </main>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <script src="app.js?v=6.0"></script>
+  <script src="app.js?v=6.1"></script>
   <script src="poster.js?v=5.8" defer></script>
 </body>
 </html>

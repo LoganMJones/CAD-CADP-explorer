@@ -561,21 +561,23 @@ function sideLayout(title, xTitle, yTitle, yType) {
 }
 
 class ModelPanel {
-  constructor(root, data) {
+  constructor(root, datasets) {
     this.root = root;
-    this.data = data;
+    this.datasets = datasets;
+    this.data = datasets.cad;
     this.menu = root.querySelector(".branch-menu");
     this.slider = root.querySelector(".point-slider");
     this.status = root.querySelector(".status");
     this.legend = root.querySelector("[data-legend]");
+    this.titleEl = root.querySelector(".model-title") || root.querySelector(".model-head h3");
+    this.predatorToggle = root.querySelector('input[data-model="predator"]');
     this.bifEl = root.querySelector('[data-plot="bif"]');
     this.logEl = root.querySelector('[data-plot="cycle-log"]');
     this.linEl = root.querySelector('[data-plot="cycle-lin"]');
     this.fitEl = root.querySelector('[data-plot="fit"]');
     this.layersOn = { stable: true, dyn_unstable: false, inv_unstable: false };
     // Stable curves only; guides / density dashes off until requested
-    // Predator density on (CADP only; checkbox absent on CAD)
-    this.annotOn = { guides: false, boundaries: false, predator: !!data.predator };
+    this.annotOn = { guides: false, boundaries: false };
     this.branchIdx = 0;
     this.pointIdx = 0;
     this._bifReady = false;
@@ -585,6 +587,7 @@ class ModelPanel {
     this._nGuide = 0;
     this._nBound = 0;
     this._hasNiche = false;
+    this._switching = false;
   }
 
   /** Force checkbox UI to match intended defaults (browsers may restore old form state). */
@@ -593,10 +596,11 @@ class ModelPanel {
       el.checked = el.dataset.layer === "stable";
     });
     this.root.querySelectorAll(".toggles input[data-annot]").forEach((el) => {
-      // Predator density on by default when the control exists (CADP)
-      el.checked = el.dataset.annot === "predator";
+      el.checked = false;
     });
+    if (this.predatorToggle) this.predatorToggle.checked = false;
     this.readToggles();
+    this.syncModelTitle();
   }
 
   readToggles() {
@@ -606,6 +610,11 @@ class ModelPanel {
     this.root.querySelectorAll(".toggles input[data-annot]").forEach((el) => {
       this.annotOn[el.dataset.annot] = el.checked;
     });
+  }
+
+  syncModelTitle() {
+    if (!this.titleEl) return;
+    this.titleEl.textContent = this.data.predator ? "Predator present" : "Predator absent";
   }
 
   fillMenu() {
@@ -639,13 +648,17 @@ class ModelPanel {
   }
 
   bind() {
-    this.root.querySelectorAll(".toggles input").forEach((el) => {
+    this.root.querySelectorAll(".toggles input[data-layer], .toggles input[data-annot]").forEach((el) => {
       el.addEventListener("change", () => {
         this.readToggles();
         this.applyVisibility();
-        this.applyPredatorVisibility();
       });
     });
+    if (this.predatorToggle) {
+      this.predatorToggle.addEventListener("change", () => {
+        this.switchModel(!!this.predatorToggle.checked);
+      });
+    }
     this.menu.addEventListener("change", () => {
       this.setBranch(Number(this.menu.value), true);
     });
@@ -660,6 +673,34 @@ class ModelPanel {
         this.updatePoint();
       });
     });
+  }
+
+  async switchModel(predator) {
+    if (this._switching) return;
+    const next = predator ? this.datasets.cadp : this.datasets.cad;
+    if (!next || next === this.data) {
+      this.syncModelTitle();
+      return;
+    }
+    this._switching = true;
+    this.status.textContent = "switching…";
+    try {
+      this.data = next;
+      this.syncModelTitle();
+      this.fillMenu();
+      this._bifReady = false;
+      this._sidesReady = false;
+      await Promise.all([this.drawBif(), this.initSidePlots()]);
+      this.applyVisibility();
+      this.setBranch(this.branchIdx, true);
+      this.syncTickLabels();
+      this.status.textContent = predator ? "predator present" : "predator absent";
+    } catch (err) {
+      console.error(err);
+      this.status.textContent = `error: ${err.message}`;
+    } finally {
+      this._switching = false;
+    }
   }
 
   async drawBif() {
@@ -752,14 +793,6 @@ class ModelPanel {
     vis.push(true);
     const idxs = vis.map((_, i) => i);
     Plotly.restyle(this.bifEl, { visible: vis }, idxs);
-  }
-
-  /** Show/hide predator density curve (row 0) on CADP cycle plots. */
-  applyPredatorVisibility() {
-    if (!this._sidesReady || !this.data.predator) return;
-    const on = !!this.annotOn.predator;
-    Plotly.restyle(this.logEl, { visible: on }, [0]);
-    Plotly.restyle(this.linEl, { visible: on }, [0]);
   }
 
   async initSidePlots() {
@@ -899,10 +932,7 @@ class ModelPanel {
     // Keep log-density tick labels in the compact two-digit style as the range shifts
     let logMin = Infinity;
     let logMax = -Infinity;
-    const skipPred = this.data.predator && !this.annotOn.predator;
-    for (let s = 0; s < yLog.length; s++) {
-      if (skipPred && s === 0) continue;
-      const row = yLog[s];
+    for (const row of yLog) {
       if (!row) continue;
       for (const v of row) {
         if (!Number.isFinite(v)) continue;
@@ -923,8 +953,6 @@ class ModelPanel {
       });
     }
 
-    this.applyPredatorVisibility();
-
     const xFit = pt.x_fit;
     const traitCols = traitMemberColors(xs);
     Plotly.restyle(
@@ -938,7 +966,7 @@ class ModelPanel {
     Plotly.restyle(this.fitEl, { "marker.color": [traitCols], "marker.size": 9 }, [1]);
 
     const labels = [];
-    if (this.data.predator && this.annotOn.predator) {
+    if (this.data.predator) {
       labels.push(`<span style="color:#000000"><i class="swatch"></i>predator</span>`);
     }
     for (let i = 0; i < xs.length; i++) {
@@ -951,36 +979,38 @@ class ModelPanel {
   }
 }
 
-async function bootPanel(el) {
-  const model = el.dataset.model;
-  const status = el.querySelector(".status");
-  status.textContent = "loading data…";
+async function loadModelBundle(model) {
   const [data, niche] = await Promise.all([
     loadGzipJson(`data/${model}.json.gz`),
     loadGzipJson(`data/${model}_niche.json.gz`).catch(() => null),
   ]);
   if (niche && !data.niche) data.niche = niche;
   applyPosterColors(data);
+  return data;
+}
+
+async function bootPanel(el) {
+  const status = el.querySelector(".status");
+  status.textContent = "loading data…";
+  const [cad, cadp] = await Promise.all([loadModelBundle("cad"), loadModelBundle("cadp")]);
   status.textContent = "drawing…";
-  const panel = new ModelPanel(el, data);
+  const panel = new ModelPanel(el, { cad, cadp });
   await panel.init();
   return panel;
 }
 
 async function main() {
-  const panels = [...document.querySelectorAll(".model-panel")];
+  const el = document.querySelector(".model-panel");
   const live = [];
-  await Promise.all(
-    panels.map(async (el) => {
-      try {
-        const panel = await bootPanel(el);
-        if (panel) live.push(panel);
-      } catch (err) {
-        console.error(err);
-        el.querySelector(".status").textContent = `error: ${err.message}`;
-      }
-    })
-  );
+  if (el) {
+    try {
+      const panel = await bootPanel(el);
+      if (panel) live.push(panel);
+    } catch (err) {
+      console.error(err);
+      el.querySelector(".status").textContent = `error: ${err.message}`;
+    }
+  }
 
   function syncAllTicks() {
     live.forEach((p) => p.syncTickLabels());
