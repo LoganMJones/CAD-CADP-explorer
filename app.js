@@ -13,6 +13,13 @@ const BAND_DARK = "rgb(1, 26, 61)"; // RGBf(0.004, 0.10, 0.24)
 const AXIS_BG = "rgb(77, 92, 110)"; // RGBf(0.30, 0.36, 0.44) — uninhabitable / axis
 const POSTER_BLUE = "#B9D6F2";
 const PLOT_CFG = { responsive: true, displayModeBar: false };
+const BIF_PLOT_CFG = {
+  responsive: true,
+  displayModeBar: true,
+  displaylogo: false,
+  scrollZoom: true,
+  modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"],
+};
 
 // Poster CADP bifurcation_colors remapped onto export order
 // [1,2,3,9,5,8,4,7,10,12,11,6] (4 & 6 = unstable-only extras)
@@ -470,7 +477,7 @@ class ModelPanel {
         tickvals: [0, 5, 10, 15, 20, 24],
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
-        fixedrange: true,
+        fixedrange: false,
         tickfont: { size: 11 },
       },
       yaxis: {
@@ -479,15 +486,16 @@ class ModelPanel {
         tickvals: [-24, -20, -15, -10, -5, 0, 5, 10, 15, 20, 24],
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
-        fixedrange: true,
+        fixedrange: false,
         tickfont: { size: 11 },
       },
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: AXIS_BG,
       showlegend: false,
+      dragmode: "zoom",
       uirevision: "bif",
     };
-    await Plotly.newPlot(this.bifEl, traces, layout, PLOT_CFG);
+    await Plotly.newPlot(this.bifEl, traces, layout, BIF_PLOT_CFG);
     this._bifReady = true;
   }
 
