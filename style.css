@@ -801,9 +801,10 @@ body.kbs-poster-page {
 }
 
 .stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(220px, 0.85fr);
+  gap: 0.55rem;
+  align-items: stretch;
 }
 
 .results-interactive .plot {
@@ -822,6 +823,7 @@ body.kbs-poster-page {
 
 .bif.plot {
   min-height: 440px;
+  flex: 1 1 auto;
   background: #4d5c6e;
 }
 
@@ -852,16 +854,16 @@ body.kbs-poster-page {
 
 .side {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: 1fr 1fr 1fr auto;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .side .plot {
-  min-height: 140px;
+  min-height: 120px;
 }
 
 .legend {
-  grid-column: 1 / -1;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.72rem;
   display: flex;
@@ -883,11 +885,16 @@ body.kbs-poster-page {
 }
 
 @media (max-width: 960px) {
+  .stack {
+    grid-template-columns: 1fr;
+  }
+
   .bif.plot {
     min-height: 360px;
   }
 
   .side {
+    grid-template-rows: none;
     grid-template-columns: 1fr;
   }
 }
