@@ -574,7 +574,8 @@ class ModelPanel {
     this.fitEl = root.querySelector('[data-plot="fit"]');
     this.layersOn = { stable: true, dyn_unstable: false, inv_unstable: false };
     // Stable curves only; guides / density dashes off until requested
-    this.annotOn = { guides: false, boundaries: false };
+    // Predator density on (CADP only; checkbox absent on CAD)
+    this.annotOn = { guides: false, boundaries: false, predator: !!data.predator };
     this.branchIdx = 0;
     this.pointIdx = 0;
     this._bifReady = false;
@@ -592,7 +593,8 @@ class ModelPanel {
       el.checked = el.dataset.layer === "stable";
     });
     this.root.querySelectorAll(".toggles input[data-annot]").forEach((el) => {
-      el.checked = false;
+      // Predator density on by default when the control exists (CADP)
+      el.checked = el.dataset.annot === "predator";
     });
     this.readToggles();
   }
@@ -641,6 +643,7 @@ class ModelPanel {
       el.addEventListener("change", () => {
         this.readToggles();
         this.applyVisibility();
+        this.applyPredatorVisibility();
       });
     });
     this.menu.addEventListener("change", () => {
@@ -749,6 +752,14 @@ class ModelPanel {
     vis.push(true);
     const idxs = vis.map((_, i) => i);
     Plotly.restyle(this.bifEl, { visible: vis }, idxs);
+  }
+
+  /** Show/hide predator density curve (row 0) on CADP cycle plots. */
+  applyPredatorVisibility() {
+    if (!this._sidesReady || !this.data.predator) return;
+    const on = !!this.annotOn.predator;
+    Plotly.restyle(this.logEl, { visible: on }, [0]);
+    Plotly.restyle(this.linEl, { visible: on }, [0]);
   }
 
   async initSidePlots() {
@@ -888,7 +899,10 @@ class ModelPanel {
     // Keep log-density tick labels in the compact two-digit style as the range shifts
     let logMin = Infinity;
     let logMax = -Infinity;
-    for (const row of yLog) {
+    const skipPred = this.data.predator && !this.annotOn.predator;
+    for (let s = 0; s < yLog.length; s++) {
+      if (skipPred && s === 0) continue;
+      const row = yLog[s];
       if (!row) continue;
       for (const v of row) {
         if (!Number.isFinite(v)) continue;
@@ -909,6 +923,8 @@ class ModelPanel {
       });
     }
 
+    this.applyPredatorVisibility();
+
     const xFit = pt.x_fit;
     const traitCols = traitMemberColors(xs);
     Plotly.restyle(
@@ -922,7 +938,7 @@ class ModelPanel {
     Plotly.restyle(this.fitEl, { "marker.color": [traitCols], "marker.size": 9 }, [1]);
 
     const labels = [];
-    if (this.data.predator) {
+    if (this.data.predator && this.annotOn.predator) {
       labels.push(`<span style="color:#000000"><i class="swatch"></i>predator</span>`);
     }
     for (let i = 0; i < xs.length; i++) {
