@@ -102,6 +102,13 @@ body.kbs-poster-page {
   font-family: "Source Sans 3", system-ui, sans-serif;
   font-size: 0.86rem;
   backdrop-filter: blur(8px);
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.section-jump.is-scrolled-away {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .section-jump__home {
@@ -511,23 +518,47 @@ body.kbs-poster-page {
   min-width: 0;
 }
 
-.method-row__text h3 {
-  margin: 0 0 0.5rem;
+.method-row__text h3,
+.method-block h3 {
+  margin: 0 0 0.35rem;
   font-family: "Source Sans 3", system-ui, sans-serif;
-  font-size: 1.22em;
-  line-height: 1.25;
+  font-size: 0.95em;
   color: #1f3f5f;
 }
 
-.method-row__text p {
-  margin: 0 0 0.75em;
-  font-size: 1.06em;
-  line-height: 1.58;
+.method-row__text p,
+.method-block > p {
+  margin: 0;
+  font-size: 0.9em;
+  line-height: 1.45;
+}
+
+.method-block {
+  text-align: center;
+  margin-top: 0.35rem;
+}
+
+.method-block--left {
+  text-align: left;
+}
+
+.method-block__head-c {
+  text-align: center;
+}
+
+.method-block > p {
+  margin: 0 auto 0.55rem;
+  max-width: 42rem;
+}
+
+.method-block--left > p {
+  margin: 0 0 0.55rem;
   max-width: none;
 }
 
-.method-row__text p:last-child {
-  margin-bottom: 0;
+.method-block .full-col-fig {
+  margin-top: 0.25rem;
+  text-align: left;
 }
 
 /* Discussion */
@@ -994,13 +1025,13 @@ body.kbs-poster-page {
 
 .stack {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(220px, 0.85fr);
-  gap: 0.55rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(160px, 0.72fr);
+  gap: 0.4rem;
   align-items: stretch;
 }
 
 .results-interactive .plot {
-  min-height: 150px;
+  min-height: 110px;
   border: 1px solid rgba(10, 10, 10, 0.4);
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.88);
@@ -1009,24 +1040,25 @@ body.kbs-poster-page {
 .bif-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
   min-width: 0;
 }
 
 .bif.plot {
-  min-height: 440px;
+  min-height: 280px;
+  max-height: min(48vh, 22rem);
   flex: 1 1 auto;
   background: #b9d6f2;
 }
 
 .stab-cbar {
-  padding: 0 0.2rem 0.05rem 2.4rem;
-  font-size: 0.74rem;
+  padding: 0 0.2rem 0.05rem 2rem;
+  font-size: 0.7rem;
   color: var(--ink);
 }
 
 .stab-cbar-bar {
-  height: 11px;
+  height: 9px;
   border-radius: 1px;
   background: linear-gradient(90deg, rgb(1, 26, 61), rgb(222, 237, 252));
   border: 1px solid rgba(20, 32, 51, 0.25);
@@ -1036,31 +1068,31 @@ body.kbs-poster-page {
   display: flex;
   justify-content: space-between;
   margin-top: 0.08rem;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
 }
 
 .stab-cbar-label {
   text-align: center;
-  font-size: 0.76rem;
+  font-size: 0.7rem;
 }
 
 .side {
   display: grid;
   grid-template-rows: 1fr 1fr 1fr auto;
-  gap: 0.4rem;
+  gap: 0.3rem;
   min-width: 0;
 }
 
 .side .plot {
-  min-height: 120px;
+  min-height: 88px;
 }
 
 .legend {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 0.7rem;
+  gap: 0.2rem 0.55rem;
   color: var(--ink);
 }
 
@@ -1086,16 +1118,28 @@ body.kbs-poster-page {
     width: 100%;
   }
 
+  .bif.plot {
+    min-height: 240px;
+    max-height: min(42vh, 18rem);
+  }
+}
+
+@media (max-width: 640px) {
   .stack {
     grid-template-columns: 1fr;
   }
 
   .bif.plot {
-    min-height: 360px;
+    min-height: 220px;
+    max-height: none;
   }
 
   .side {
     grid-template-rows: none;
     grid-template-columns: 1fr;
+  }
+
+  .side .plot {
+    min-height: 110px;
   }
 }

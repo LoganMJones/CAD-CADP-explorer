@@ -2,9 +2,12 @@
  * KBS poster page — section jumps, supplemental panels, back-to-top.
  */
 (function () {
+  var MOBILE_MQ = window.matchMedia("(max-width: 960px)");
+  var SCROLL_HIDE_Y = 48;
+
   function stickyOffset() {
     var nav = document.getElementById("section-jump");
-    if (!nav) return 12;
+    if (!nav || nav.classList.contains("is-scrolled-away")) return 12;
     return Math.ceil(nav.getBoundingClientRect().height) + 10;
   }
 
@@ -81,13 +84,27 @@
   });
 
   var backTop = document.getElementById("back-top");
-  function updateBackTop() {
-    if (!backTop) return;
-    if (window.scrollY > 420) backTop.classList.add("is-visible");
-    else backTop.classList.remove("is-visible");
+  var sectionJump = document.getElementById("section-jump");
+
+  function updateChrome() {
+    var y = window.scrollY || 0;
+    if (backTop) {
+      if (y > 420) backTop.classList.add("is-visible");
+      else backTop.classList.remove("is-visible");
+    }
+    if (sectionJump) {
+      var hide = MOBILE_MQ.matches && y > SCROLL_HIDE_Y;
+      sectionJump.classList.toggle("is-scrolled-away", hide);
+    }
   }
-  window.addEventListener("scroll", updateBackTop, { passive: true });
-  updateBackTop();
+
+  window.addEventListener("scroll", updateChrome, { passive: true });
+  if (typeof MOBILE_MQ.addEventListener === "function") {
+    MOBILE_MQ.addEventListener("change", updateChrome);
+  } else if (typeof MOBILE_MQ.addListener === "function") {
+    MOBILE_MQ.addListener(updateChrome);
+  }
+  updateChrome();
 
   window.addEventListener("hashchange", handleHash);
   if (document.readyState === "loading") {

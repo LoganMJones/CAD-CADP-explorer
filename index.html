@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6.0">
+  <link rel="stylesheet" href="style.css?v=6.1">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -118,16 +118,7 @@
             </figure>
             <div class="method-row__text">
               <h3>How temp. changes</h3>
-              <p>
-                The trait we focus on is thermal optimum, such that populations have a set temperature
-                which facilitates their fastest growth. The temperature is periodically forced using sine
-                waves; this emulates real world temperature fluctuations in varying climate regimes,
-                smaller amplitude being analogous to the tropics, larger to more temperate regions.
-              </p>
-              <p>
-                Our model uses seasonal temperature fluctuation (<em>T</em><sub>amp</sub>) to study the
-                evolution of thermal optima and its impact on species coexistence.
-              </p>
+              <p>Our model uses seasonal temperature fluctuation (<em>T</em><sub>amp</sub>) to study the evolution of thermal optima and its impact on species coexistence.</p>
             </div>
           </div>
 
@@ -138,38 +129,14 @@
             </figure>
             <div class="method-row__text">
               <h3>Finding a stable seasonal cycle</h3>
-              <p>
-                We begin our analysis by solving for ecological dynamics with empirically motivated
-                parameter values. This requires finding a stable attractor, in our model taking the form
-                of a limit cycle which begins and ends on the same value. This can be imagined as
-                representing the conditions late on December 31st leading to the dynamics early the
-                following morning, January 1st. This analysis simulates τ or one year of population
-                densities over time.
-              </p>
+              <p>First we simulate the density of our community over time. After a long simulation we find a periodic solution to the ecological dynamics, which repeats with the seasonal temperature.</p>
             </div>
           </div>
 
-          <div class="method-row method-row--evolve">
-            <div class="method-row__text">
-              <h3>Survival of the fittest</h3>
-              <p>
-                After obtaining our limit cycle we introduce trait based evolution, tracking thermal
-                optimum at the ecological attractor. This is justified by a separation of timescales
-                between ecological and evolutionary dynamics, that is, the ecological system has
-                stabilized before evolution enters the picture. To do this we use game theoretic framing
-                to find our communities evolutionarily stable strategy (ESS) – a community structure
-                where the population has adopted a trait which out-competes all other traits in a given
-                environment under natural selection. Species possessing these optimal traits are
-                uninvasible, since no mutant species can invade in their presence. This is followed by
-                finding those ESS which are perturbation stable – also known as an evolutionarily stable
-                community (ESC). Once this is done for our starting species, we find fitness landscapes
-                representing local minima and introduce new species where they can stably coexist,
-                computing their ESS and ESC using the prior techniques. We then sweep our parameter
-                space using numerical continuation and generate a bifurcation diagram showing how
-                communities structure themselves as our temperature amplitude grows.
-              </p>
-            </div>
-            <figure class="method-row__fig">
+          <div class="method-block method-block--left">
+            <h3 class="method-block__head-c">Survival of the fittest</h3>
+            <p>Next we allow thermal optima to evolve. These seed communities eventually reach an equilibrium where no other species can invade. We call these <em>Evolutionarily Stable Communities</em> (ESCs).</p>
+            <figure class="full-col-fig">
               <img src="https://loganjones.org/images/kbs-poster/exploratory/trait_fitness_combo.png?v=4" alt="Thermal optima evolving on a fitness landscape toward an evolutionarily stable community" width="900" height="520" loading="lazy">
               <figcaption class="fig-cap"><strong>Fig. 3.</strong> Thermal optima (<em>x</em>) evolving from a scattered start; each climbs the fitness landscape (λ) to a peak, where no new species can invade (an ESC).</figcaption>
             </figure>
@@ -195,20 +162,8 @@
               stable community (ESC) trait values across seasonal amplitude
               <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
               Shading highlights structural stability: lighter represents a relatively wider range of environments
-              over which the community persists.
-              Vertical dashed lines mark qualitative transitions (by eye) in species densities; the small intervals
-              between these dashed lines represent regions where species densities are quickly changing.
-              Fixed parameters (both panels):
-              μ<sub>max</sub>&nbsp;=&nbsp;1,
-              <em>R</em><sub>tot</sub>&nbsp;=&nbsp;100,
-              <em>m</em>&nbsp;=&nbsp;1,
-              τ&nbsp;=&nbsp;10,
-              σ<sup>2</sup>&nbsp;=&nbsp;8 (σ&nbsp;=&nbsp;√8),
-              <em>T̄</em>&nbsp;=&nbsp;0,
-              with <em>T</em><sub>amp</sub> explored on [0,&nbsp;24].
-              Predator-present panel also uses attack rate <em>a</em>&nbsp;=&nbsp;0.1 and predator mortality
-              <em>m</em><sub>P</sub>&nbsp;=&nbsp;8.5.
-              Use the interactive panels below to inspect the same communities branch by branch.
+              over which the community persists. Vertical dashed
+              lines mark qualitative transitions (by eye) in species densities; the small intervals between these dashed lines represent regions where species densities are quickly changing.
             </figcaption>
           </figure>
 
@@ -472,6 +427,6 @@
   </main>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script src="app.js?v=5.7"></script>
-  <script src="poster.js?v=5.6" defer></script>
+  <script src="poster.js?v=5.8" defer></script>
 </body>
 </html>
