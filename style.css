@@ -90,7 +90,8 @@ body.kbs-poster-page {
 }
 
 .poster-shell {
-  width: min(1760px, calc(100% - 0.75rem));
+  width: calc(100% - 1rem);
+  max-width: none;
   margin: 0.65rem auto 2rem;
 }
 
@@ -716,17 +717,13 @@ body.kbs-poster-page {
 }
 
 
-/* ---- Interactive Results inside poster Results box ---- */
+/* ---- Interactive Results (scoped; do not alter poster board layout) ---- */
 .area-results {
   overflow: visible;
-  min-height: 0;
 }
 
 .area-results .poster-box__body {
   overflow: visible;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
 .results-interactive {
@@ -809,7 +806,7 @@ body.kbs-poster-page {
   gap: 0.45rem;
 }
 
-.plot {
+.results-interactive .plot {
   min-height: 150px;
   border: 1px solid rgba(10, 10, 10, 0.4);
   border-radius: 3px;
@@ -824,7 +821,7 @@ body.kbs-poster-page {
 }
 
 .bif.plot {
-  min-height: 420px;
+  min-height: 440px;
   background: #4d5c6e;
 }
 
@@ -885,11 +882,11 @@ body.kbs-poster-page {
   background: currentColor;
 }
 
-/* On narrower viewports, keep original mobile column order and stack side plots */
 @media (max-width: 960px) {
   .bif.plot {
     min-height: 360px;
   }
+
   .side {
     grid-template-columns: 1fr;
   }
