@@ -212,9 +212,10 @@ function lerpRgb(a, b, t) {
 }
 
 /**
- * One background heatmap: light→dark blue structural stability in the
- * habitable funnel, solid gray outside. Plotly cannot composite two
- * stacked heatmaps, which previously left plot_bgcolor (dark gray) showing.
+ * Background: light-blue structural-stability field + gray uninhabitable funnel.
+ * Habitable cells use softness in [0,1] (light→dark blue). Uninhabitable uses
+ * a separate near-solid gray encoded just above 1 so the funnel cannot wash
+ * the plot to AXIS_BG charcoal.
  */
 function bifBackgroundHeatmap(data, pal) {
   const band = data.stability_band;
@@ -245,6 +246,7 @@ function bifBackgroundHeatmap(data, pal) {
     };
   }
 
+  // Prefer full-plot stability stripes when niche is missing
   if (!field || !niche.T || !niche.x) return stabilityHeatmap(band, ylim, pal);
 
   const nT = niche.T.length;
@@ -259,18 +261,15 @@ function bifBackgroundHeatmap(data, pal) {
     softAt[i] = softV[j];
   }
 
-  // z in [0,1] = stability softness (blue); z in (1,2] = uninhabitable gray
+  // Encode: 0..1 = stability blues; 1.15 = solid niche gray
   const EDGE = 0.5;
+  const Z_GRAY = 1.15;
   const z = new Array(nX);
   for (let ix = 0; ix < nX; ix++) {
     const row = new Array(nT);
     for (let iT = 0; iT < nT; iT++) {
       const u = field[iT][ix];
-      if (u >= EDGE) {
-        row[iT] = 1 + Math.min(1, Math.max(0, (u - EDGE) / Math.max(1e-6, 1 - EDGE)));
-      } else {
-        row[iT] = softAt[iT];
-      }
+      row[iT] = u >= EDGE ? Z_GRAY : softAt[iT];
     }
     z[ix] = row;
   }
@@ -282,12 +281,11 @@ function bifBackgroundHeatmap(data, pal) {
     z,
     colorscale: [
       [0.0, light],
-      [0.5, dark],
-      [0.51, nicheGray],
+      [1 / Z_GRAY, dark],
       [1.0, nicheGray],
     ],
     zmin: 0,
-    zmax: 2,
+    zmax: Z_GRAY,
     showscale: false,
     hoverinfo: "skip",
     hoverongaps: false,
@@ -637,7 +635,7 @@ class ModelPanel {
         tickfont: { size: 11 },
       },
       paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: BAND_LIGHT,
+      plot_bgcolor: POSTER_BLUE,
       showlegend: false,
       dragmode: "zoom",
       hovermode: "closest",

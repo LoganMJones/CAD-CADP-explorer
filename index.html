@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5.5">
+  <link rel="stylesheet" href="style.css?v=5.6">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -58,6 +58,7 @@
       <a href="#discussion-h">Discussion</a>
       <a href="#ack-h">Acknowledgments</a>
       <a href="#abstract" data-open-panel="abstract">Abstract</a>
+      <a href="#proposal" data-open-panel="proposal">Proposal</a>
       <a href="#bibliography" data-open-panel="bibliography">References</a>
     </div>
   </nav>
@@ -80,6 +81,8 @@
           <a href="https://loganjones.org/templates/contact">Contact</a>
           <span aria-hidden="true"> · </span>
           <a href="#abstract">Abstract</a>
+          <span aria-hidden="true"> · </span>
+          <a href="#proposal">Proposal</a>
           <span aria-hidden="true"> · </span>
           <a href="#bibliography">References</a>
           <span aria-hidden="true"> · </span>
@@ -357,6 +360,65 @@
         </div>
       </details>
 
+      <details class="poster-panel" id="proposal">
+        <summary>Proposal</summary>
+        <div class="poster-panel__body">
+          <p class="poster-panel__lede">
+            <em>Eco-Evolutionary Dynamics: Surveying how predation and cyclical temperature forcing influence emergent community structure</em>
+          </p>
+          <p>
+            Empirical data and theory agree that the introduction of predation can facilitate a greater number of species
+            coexisting within a guild (Paine, 1966; Holt, 1977; Holt et al., 1994; Chesson, 2000; Leibold et al., 2017).
+            However, a thorough mechanistic grasp of the fundamental physical constraints, the intermediate causal
+            relationships – such as the ways in which predation may promote guild diversity – and the overall system
+            behavior, remains crucial for understanding biological systems. Ecological theory is increasingly being
+            translated into real world application (Anderson et al., 2021; Mouquet et al., 2015). Navigating such applications
+            under a warming climate, and other intensifying anthropogenic pressures necessitates more accurate
+            forecasting and a detailed understanding of individual mechanisms. This study examines one such system
+            by looking at the role, if any, that predation plays in guild diversity. Our approach models the number of
+            species which can stably coexist with and without predation.
+          </p>
+          <p>
+            Our line of inquiry follows an approach which showed that cyclical temperature forcing in species coexistence
+            models allows for greater species trait diversity (Kremer and Klausmeier, 2017). Without temperature
+            forcing, trait evolution is optimized for whichever species has the trait which is equal to the constant temperature
+            value. Our periodic setup prevents any one species from being optimal at all times, allowing seasonal
+            specialists to coexist. Prior models include regional migration – preventing true extinction – or do not
+            introduce predation. We explore whether this increase in species packing – “the study of the co-occurrence of
+            different species of organisms in a particular sampling area (Slobodkin, 2001)” – holds under more stringent
+            modeling conditions. Hence, we have no regional migration and introduce predator-prey dynamics. We ask
+            the question: Does top-down predation increase species packing in closed systems? We believe that predation
+            may compress realized niche widths, reducing absolute niche overlap – limiting similarity – which
+            could create space for increased guild diversity.
+          </p>
+          <p>
+            This project focuses on coupling ecological and evolutionary model dynamics under periodic environmental
+            forcing, a computationally demanding, yet technically feasible extension of existing population density
+            models (Kremer and Klausmeier, 2017). We use a system of differential equations, including one equation for
+            each prey species coupled with a predator equation. The trait we focus on is thermal optimum, such that
+            populations have a set temperature which facilitates their fastest growth. The temperature is periodically
+            forced using sine waves; this emulates real world temperature fluctuations in varying climate regimes,
+            smaller amplitude being analogous to the tropics, larger to more temperate regions.
+          </p>
+          <p>
+            We begin our analysis by solving for ecological dynamics with empirically motivated parameter values.
+            This requires finding a stable attractor, in our model taking the form of a limit cycle which begins and ends
+            on the same value. After obtaining our limit cycle we introduce trait based evolution, tracking thermal
+            optimum at the ecological attractor. We use game theoretic framing to find evolutionarily stable strategies
+            (ESS) and evolutionarily stable communities (ESC), then sweep parameter space with numerical continuation
+            to generate bifurcation diagrams of community structure as temperature amplitude grows.
+          </p>
+          <p>
+            Comparing the maximum number of and the general trend in species diversity which emerges from our
+            model, against a baseline without predation will shed light on whether predation facilitates species packing,
+            decreases diversity, or has no effect on the number of species which can coexist on a shared resource.
+          </p>
+          <p class="poster-panel__actions">
+            <a href="files/kbs-proposal.pdf" target="_blank" rel="noopener noreferrer">Download proposal (PDF)</a>
+          </p>
+        </div>
+      </details>
+
       <details class="poster-panel" id="bibliography">
         <summary>Bibliography</summary>
         <div class="poster-panel__body">
@@ -381,12 +443,12 @@
       <p class="poster-materials__quiet">
         <a href="https://loganjones.org/" target="_blank" rel="noopener noreferrer">loganjones.org</a>
         <span aria-hidden="true"> · </span>
-        <a href="https://loganjones.org/files/kbs-proposal.pdf" target="_blank" rel="noopener noreferrer">Original proposal (PDF)</a>
+        <a href="files/kbs-proposal.pdf" target="_blank" rel="noopener noreferrer">Original proposal (PDF)</a>
       </p>
     </aside>
   </main>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <script src="app.js?v=5.5"></script>
-  <script src="poster.js?v=5.4" defer></script>
+  <script src="app.js?v=5.6"></script>
+  <script src="poster.js?v=5.6" defer></script>
 </body>
 </html>

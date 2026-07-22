@@ -30,7 +30,7 @@
     }
     var el = document.getElementById(id);
     if (!el) return;
-    if (id === "bibliography" || id === "references" || id === "abstract") {
+    if (id === "bibliography" || id === "references" || id === "abstract" || id === "proposal") {
       openPanel(id === "references" ? "bibliography" : id);
       return;
     }
@@ -50,6 +50,8 @@
       openPanel("bibliography");
     } else if (hash === "abstract") {
       openPanel("abstract");
+    } else if (hash === "proposal") {
+      openPanel("proposal");
     } else if (hash === "poster") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
