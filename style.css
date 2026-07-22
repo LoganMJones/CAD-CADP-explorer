@@ -77,7 +77,10 @@ body.kbs-poster-page {
 }
 
 .kbs-chrome__home {
-  font-weight: 600;
+  font-weight: 700;
+  color: #ffe6a8;
+  order: -1;
+  margin-right: auto;
 }
 
 .section-jump {
@@ -115,12 +118,21 @@ body.kbs-poster-page {
   font-weight: 700;
   color: #ffe6a8 !important;
   border-color: rgba(255, 230, 168, 0.45) !important;
-  margin-right: 0.25rem;
+  margin-right: 0.35rem;
+}
+
+/* Keep section titles visible under the sticky jump bar */
+.poster-box__header,
+.model-panel,
+.poster-panel,
+#poster {
+  scroll-margin-top: 4.75rem;
 }
 
 .back-top {
   position: fixed;
-  right: 1rem;
+  left: 1rem;
+  right: auto;
   bottom: 1rem;
   z-index: 50;
   display: inline-flex;

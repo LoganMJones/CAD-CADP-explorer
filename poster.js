@@ -2,13 +2,25 @@
  * KBS poster page — section jumps, supplemental panels, back-to-top.
  */
 (function () {
+  function stickyOffset() {
+    var nav = document.getElementById("section-jump");
+    if (!nav) return 12;
+    return Math.ceil(nav.getBoundingClientRect().height) + 10;
+  }
+
+  function scrollToEl(el) {
+    if (!el) return;
+    var top = el.getBoundingClientRect().top + window.scrollY - stickyOffset();
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  }
+
   function openPanel(id) {
     var el = document.getElementById(id);
     if (!el) return;
     if (el.tagName === "DETAILS") {
       el.open = true;
     }
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    scrollToEl(el);
   }
 
   function scrollToId(id) {
@@ -22,7 +34,10 @@
       openPanel(id === "references" ? "bibliography" : id);
       return;
     }
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Prefer the section box so the colored header lands under the sticky nav
+    var section = el.closest(".poster-box, .model-panel, .poster-panel") || el;
+    var target = section.querySelector(".poster-box__header") || section;
+    scrollToEl(target);
   }
 
   function handleHash() {
@@ -53,7 +68,6 @@
       return;
     }
 
-    // Smooth-scroll in-page section links (including Home / Top)
     if (document.getElementById(id) || id === "poster") {
       e.preventDefault();
       history.replaceState(null, "", "#" + id);
