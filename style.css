@@ -715,128 +715,127 @@ body.kbs-poster-page {
   }
 }
 
-/* ---- Top-down scroll twin (more space for interactive results) ---- */
-.poster-shell {
-  width: min(1200px, calc(100% - 0.75rem));
+
+/* ---- Interactive Results inside poster Results box ---- */
+.area-results {
+  overflow: visible;
+  min-height: 0;
 }
 
-.poster-grid {
-  display: flex !important;
+.area-results .poster-box__body {
+  overflow: visible;
+  display: flex;
   flex-direction: column;
-  gap: var(--gap);
+  gap: 0.75rem;
 }
-
-.poster-main,
-.poster-side,
-.poster-main__lower {
-  display: contents !important;
-}
-
-.area-bg { order: 1; }
-.area-methods { order: 2; }
-.area-results { order: 3; }
-.area-diversity { order: 4; }
-.area-discussion { order: 5; }
-.area-ack { order: 6; }
-
-.area-results { overflow: visible; }
-.area-results .poster-box__body { overflow: visible; }
 
 .results-interactive {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
+  width: 100%;
 }
 
 .results-lede {
-  margin: 0 0 0.25rem;
+  margin: 0;
   text-align: left;
 }
 
 .model-panel {
   margin: 0;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1.5px solid rgba(10, 10, 10, 0.35);
+  padding: 0.65rem 0.7rem 0.75rem;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
   border-radius: 8px;
 }
 
 .model-head {
   display: grid;
-  gap: 0.55rem;
-  margin-bottom: 0.65rem;
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
 }
 
 .model-head h3 {
   margin: 0;
   font-family: "Source Sans 3", system-ui, sans-serif;
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  color: var(--ink);
 }
 
-.toggles, .controls {
+.toggles,
+.controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.55rem 0.9rem;
+  gap: 0.45rem 0.75rem;
   align-items: center;
   font-family: "Source Sans 3", system-ui, sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  color: var(--ink);
 }
 
-.toggles label, .controls label {
+.toggles label,
+.controls label {
   display: inline-flex;
-  gap: 0.35rem;
+  gap: 0.3rem;
   align-items: center;
 }
 
 .controls select {
-  min-width: 4rem;
-  padding: 0.15rem 0.3rem;
+  min-width: 3.75rem;
+  padding: 0.12rem 0.28rem;
   border: 1px solid #0a0a0a;
   border-radius: 3px;
   background: #fff;
   font: inherit;
 }
 
-.slider-wrap { flex: 1 1 12rem; }
-.slider-wrap input { width: min(28rem, 100%); vertical-align: middle; }
+.slider-wrap {
+  flex: 1 1 10rem;
+}
+
+.slider-wrap input {
+  width: min(22rem, 100%);
+  vertical-align: middle;
+}
 
 .status {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
 }
 
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.45rem;
 }
 
 .plot {
-  min-height: 180px;
-  border: 1px solid rgba(10, 10, 10, 0.35);
+  min-height: 150px;
+  border: 1px solid rgba(10, 10, 10, 0.4);
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
 }
 
 .bif-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   min-width: 0;
 }
 
 .bif.plot {
-  min-height: min(68vh, 620px);
+  min-height: 420px;
   background: #4d5c6e;
 }
 
 .stab-cbar {
-  padding: 0 0.25rem 0.1rem 2.8rem;
-  font-size: 0.78rem;
+  padding: 0 0.2rem 0.05rem 2.4rem;
+  font-size: 0.74rem;
+  color: var(--ink);
 }
 
 .stab-cbar-bar {
-  height: 12px;
+  height: 11px;
   border-radius: 1px;
   background: linear-gradient(90deg, rgb(1, 26, 61), rgb(222, 237, 252));
   border: 1px solid rgba(20, 32, 51, 0.25);
@@ -845,45 +844,53 @@ body.kbs-poster-page {
 .stab-cbar-ticks {
   display: flex;
   justify-content: space-between;
-  margin-top: 0.1rem;
-  font-size: 0.72rem;
+  margin-top: 0.08rem;
+  font-size: 0.7rem;
 }
 
 .stab-cbar-label {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
 }
 
 .side {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
-.side .plot { min-height: 170px; }
+.side .plot {
+  min-height: 140px;
+}
 
 .legend {
   grid-column: 1 / -1;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem 0.75rem;
+  gap: 0.25rem 0.7rem;
+  color: var(--ink);
 }
 
 .legend span {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.28rem;
 }
 
 .swatch {
-  width: 0.85rem;
-  height: 0.25rem;
+  width: 0.8rem;
+  height: 0.22rem;
   background: currentColor;
 }
 
-@media (max-width: 800px) {
-  .side { grid-template-columns: 1fr; }
-  .bif.plot { min-height: 400px; }
+/* On narrower viewports, keep original mobile column order and stack side plots */
+@media (max-width: 960px) {
+  .bif.plot {
+    min-height: 360px;
+  }
+  .side {
+    grid-template-columns: 1fr;
+  }
 }
