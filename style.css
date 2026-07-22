@@ -826,6 +826,11 @@ body.kbs-poster-page {
   max-width: 52rem;
 }
 
+.results-lede--below {
+  margin: 1rem 0 0;
+  max-width: none;
+}
+
 .explore-help {
   margin: 0.35rem 0 0.55rem;
   padding: 0.85rem 1rem 0.95rem;
