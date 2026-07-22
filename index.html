@@ -1,202 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Interactive CAD / CADP bifurcation explorer for KBS REU research: predation, species turnover, and structural stability under seasonal temperature forcing." />
-  <title>Predation, turnover &amp; structural stability — Interactive explorer</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-</head>
-<body>
-  <header class="site-header">
-    <p class="eyebrow">KBS REU 2026 · Klausmeier–Litchman Lab</p>
-    <h1>Predation increases species turnover and structural stability in ecological communities</h1>
-    <p class="authors">
-      <a href="https://loganjones.org/" target="_blank" rel="noopener noreferrer">Logan Jones</a>,
-      Jonas Wickman, Nasser Rabi, Christopher A. Klausmeier
-    </p>
-    <p class="lede">
-      Interactive bifurcation diagrams (CAD over CADP). Toggle stability classes, pick a community branch,
-      and scroll through temperature amplitude. Side panels show densities and the fitness landscape.
-    </p>
-  </header>
-
-  <aside class="materials" aria-label="Abstract and references">
-    <details class="drop-panel" id="abstract">
-      <summary>Abstract</summary>
-      <div class="drop-panel__body">
-        <p class="drop-panel__lede">
-          <em>Top-down predation increases species turnover and structural stability in ecological communities</em>
-        </p>
-        <p>
-          A mechanistic understanding of species coexistence is a central pursuit in ecology. One factor known to enable coexistence is temporal variation of an environmental variable. Prior eco-evolutionary models show that seasonal temperature fluctuation can facilitate coexistence through the storage effect – species with differing traits can coexist if their gains in good times exceed their losses in bad times. However, the role of predation in shaping coexistence and diversity is less well understood. We compare two models, with and without predation, to assess its effects on emergent community structure and stability. Our analysis shows that introducing a predator increases species turnover (β-diversity). This effect is mediated by a decrease in average instantaneous species diversity (α-diversity) alongside a relatively smaller decrease in time-integrated species diversity (γ-diversity); the resulting shift in their ratio drives higher average turnover. We also find that predation provides communities with increased structural stability – widening the range of environments under which communities can stably coexist. Interestingly, this increase in turnover does not translate into more species-rich evolutionarily stable communities. Predation supports more species richness at lower temperature amplitudes in our ecological model, but these communities fail to persist once thermal optima are allowed to evolve. Our study implies that predation can foster communities that are more robust to varying amplitudes of temperature fluctuations, raising an exciting empirical question: does predation allow communities to remain qualitatively unchanged as temperature fluctuations intensify?
-        </p>
-        <p class="drop-panel__actions">
-          <a href="https://loganjones.org/files/kbs-abstract.pdf" target="_blank" rel="noopener noreferrer">Download abstract (PDF)</a>
-        </p>
-      </div>
-    </details>
-
-    <details class="drop-panel" id="bibliography">
-      <summary>References</summary>
-      <div class="drop-panel__body">
-        <ol class="ref-list">
-          <li>Anderson, S. C., Elsen, P. R., Hughes, B. B., Tonietto, R. K., Bletz, M. C., Gill, D. A., Holgerson, M. A., Kuebbing, S. E., McDonough MacKenzie, C., Meek, M. H. &amp; Veríssimo, D. (2021). Trends in ecology and conservation over eight decades. <em>Frontiers in Ecology and the Environment</em>, 19(5), 274–282. <a href="https://doi.org/10.1002/fee.2320">doi:10.1002/fee.2320</a></li>
-          <li>Beckage, B., Gross, L. J. &amp; Kauffman, S. (2011). The limits to prediction in ecological systems. <em>Ecosphere</em>, 2(11), art125. <a href="https://doi.org/10.1890/ES11-00211.1">doi:10.1890/ES11-00211.1</a></li>
-          <li>Brännström, Å., Johansson, J. &amp; von Festenberg, N. (2013). The Hitchhiker's Guide to Adaptive Dynamics. <em>Games</em>, 4(3), 304–328. <a href="https://doi.org/10.3390/g4030304">doi:10.3390/g4030304</a></li>
-          <li>Chesson, P. (2000). Mechanisms of Maintenance of Species Diversity. <em>Annual Review of Ecology, Evolution, and Systematics</em>, 31, 343–366. <a href="https://doi.org/10.1146/annurev.ecolsys.31.1.343">doi:10.1146/annurev.ecolsys.31.1.343</a></li>
-          <li>Holt, R. D. (1977). Predation, apparent competition, and the structure of prey communities. <em>Theoretical Population Biology</em>, 12(2), 197–229. <a href="https://doi.org/10.1016/0040-5809(77)90042-9">doi:10.1016/0040-5809(77)90042-9</a></li>
-          <li>Holt, R. D., Grover, J. &amp; Tilman, D. (1994). Simple rules for interspecific dominance in systems with exploitative and apparent competition. <em>The American Naturalist</em>, 144(5), 741–771. <a href="https://doi.org/10.1086/285705">doi:10.1086/285705</a></li>
-          <li>Kremer, C. T. &amp; Klausmeier, C. A. (2017). Species packing in eco-evolutionary models of seasonally fluctuating environments. <em>Ecology Letters</em>, 20(9), 1158–1168. <a href="https://doi.org/10.1111/ele.12813">doi:10.1111/ele.12813</a></li>
-          <li>Leibold, M. A., Chase, J. M. &amp; Ernest, S. K. M. (2017). Community assembly and the functioning of ecosystems: How metacommunity processes alter ecosystems attributes. <em>Ecology</em>, 98(4), 909–919. <a href="https://doi.org/10.1002/ecy.1697">doi:10.1002/ecy.1697</a></li>
-          <li>Lorenz, E. N. (1963). Deterministic Nonperiodic Flow. <em>Journal of the Atmospheric Sciences</em>, 20(2), 130–141. <a href="https://doi.org/10.1175/1520-0469(1963)020%3C0130:DNF%3E2.0.CO;2">doi:10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</a></li>
-          <li>Mouquet, N., Lagadeuc, Y., Devictor, V., Doyen, L., Duputié, A., Eveillard, D., Faure, D., Garnier, E., Gimenez, O., Huneman, P., Jabot, F., Jarne, P., Joly, D., Julliard, R., Kéfi, S., Kergoat, G. J., Lavorel, S., Le Gall, L., Meslin, L. &amp; Loreau, M. (2015). Predictive ecology in a changing world. <em>Journal of Applied Ecology</em>, 52(5), 1293–1310. <a href="https://doi.org/10.1111/1365-2664.12482">doi:10.1111/1365-2664.12482</a></li>
-          <li>Paine, R. T. (1966). Food Web Complexity and Species Diversity. <em>The American Naturalist</em>, 100(910), 65–75.</li>
-          <li>Saavedra, S., Rohr, R. P., Bascompte, J., Godoy, O., Kraft, N. J. B. &amp; Levine, J. M. (2017). A structural approach for understanding multispecies coexistence. <em>Ecological Monographs</em>, 87(3), 470–486. <a href="https://doi.org/10.1002/ecm.1263">doi:10.1002/ecm.1263</a></li>
-          <li>Slobodkin, L. B. (2001). Limits to Biodiversity (Species Packing). In S. A. Levin (Ed.), <em>Encyclopedia of Biodiversity</em> (2nd ed., pp. 642–648). Academic Press. <a href="https://doi.org/10.1016/B978-0-12-384719-5.00088-5">doi:10.1016/B978-0-12-384719-5.00088-5</a></li>
-        </ol>
-      </div>
-    </details>
-  </aside>
-
-  <section class="results-intro" id="results">
-    <h2>Results — interactive bifurcation diagrams</h2>
-    <p class="lede">
-      Evolutionarily stable community (ESC) trait values across seasonal amplitude
-      <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
-      Shading is structural stability (lighter = wider persistence). Toggle unstable segments and guides as needed.
-    </p>
-  </section>
-
-  <section id="panel-cad" class="model-panel" data-model="cad">
-    <div class="model-head">
-      <h2>Predator absent</h2>
-      <div class="toggles" aria-label="Display layers">
-        <label title="Communities that are dynamically stable and invasion-stable (thick poster curves).">
-          <input type="checkbox" data-layer="stable" checked /> Stable
-        </label>
-        <label title="Continuation points that are dynamically unstable (thin lines).">
-          <input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable
-        </label>
-        <label title="Dynamically stable but invasion-unstable (translucent thick lines).">
-          <input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable
-        </label>
-        <label title="Faint trait / amplitude guides (poster compare grid).">
-          <input type="checkbox" data-annot="guides" checked /> Trait guides
-        </label>
-        <label title="Dashed vertical markers at approximate density-regime transitions (poster).">
-          <input type="checkbox" data-annot="boundaries" checked /> Density transitions
-        </label>
-      </div>
-      <div class="controls">
-        <label>Branch
-          <select class="branch-menu"></select>
-        </label>
-        <label class="slider-wrap">Point
-          <input type="range" class="point-slider" min="0" max="0" value="0" />
-        </label>
-        <span class="status">loading…</span>
-      </div>
-    </div>
-    <div class="stack">
-      <div class="bif-wrap">
-        <div class="bif plot" data-plot="bif"></div>
-        <div class="stab-cbar" aria-hidden="true">
-          <div class="stab-cbar-bar"></div>
-          <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
-          <div class="stab-cbar-label">Structural stability</div>
-        </div>
-      </div>
-      <div class="side">
-        <div class="plot" data-plot="cycle-log"></div>
-        <div class="plot" data-plot="cycle-lin"></div>
-        <div class="plot" data-plot="fit"></div>
-        <div class="legend" data-legend></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="panel-cadp" class="model-panel" data-model="cadp">
-    <div class="model-head">
-      <h2>Predator present</h2>
-      <div class="toggles" aria-label="Display layers">
-        <label title="Communities that are dynamically stable and invasion-stable (thick poster curves).">
-          <input type="checkbox" data-layer="stable" checked /> Stable
-        </label>
-        <label title="Continuation points that are dynamically unstable (thin lines).">
-          <input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable
-        </label>
-        <label title="Dynamically stable but invasion-unstable (translucent thick lines).">
-          <input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable
-        </label>
-        <label title="Faint trait / amplitude guides (poster compare grid).">
-          <input type="checkbox" data-annot="guides" checked /> Trait guides
-        </label>
-        <label title="Dashed vertical markers at approximate density-regime transitions (poster).">
-          <input type="checkbox" data-annot="boundaries" checked /> Density transitions
-        </label>
-      </div>
-      <div class="controls">
-        <label>Branch
-          <select class="branch-menu"></select>
-        </label>
-        <label class="slider-wrap">Point
-          <input type="range" class="point-slider" min="0" max="0" value="0" />
-        </label>
-        <span class="status">loading…</span>
-      </div>
-    </div>
-    <div class="stack">
-      <div class="bif-wrap">
-        <div class="bif plot" data-plot="bif"></div>
-        <div class="stab-cbar" aria-hidden="true">
-          <div class="stab-cbar-bar"></div>
-          <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
-          <div class="stab-cbar-label">Structural stability</div>
-        </div>
-      </div>
-      <div class="side">
-        <div class="plot" data-plot="cycle-log"></div>
-        <div class="plot" data-plot="cycle-lin"></div>
-        <div class="plot" data-plot="fit"></div>
-        <div class="legend" data-legend></div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    Built by
-    <a href="https://loganjones.org/" target="_blank" rel="noopener noreferrer">Logan Jones</a>.
-    <a href="https://loganjones.org/templates/contact" target="_blank" rel="noopener noreferrer">Contact</a>.
-    Hover toggles for short explanations.
-  </footer>
-
-  <script src="app.js"></script>
-  <script>
-    (function () {
-      function openPanel(id) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        if (el.tagName === "DETAILS") el.open = true;
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      function handleHash() {
-        var hash = (location.hash || "").replace(/^#/, "");
-        if (hash === "bibliography" || hash === "references") openPanel("bibliography");
-        else if (hash === "abstract") openPanel("abstract");
-        else if (hash === "results") {
-          var r = document.getElementById("results");
-          if (r) r.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
-      window.addEventListener("hashchange", handleHash);
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", handleHash);
-      } else {
-        handleHash();
-      }
-    })();
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KBS REU research poster: Predation increases species turnover and structural stability in ecological communities. Logan Jones, Klausmeier–Litchman Lab, Michigan State University.">
+  <meta name="author" content="Logan Jones">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Predation increases species turnover and structural stability in ecological communities">
+  <meta property="og:description" content="Predation increases species turnover and structural stability in ecological communities — KBS REU research poster.">
+  <meta property="og:url" content="https://loganmjones.github.io/CAD-CADP-explorer/">
+  <meta property="og:image" content="https://loganjones.org/images/kbs-poster/bif_stable_compare.png?v=5">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>KBS Poster · Predation, turnover &amp; structural stability</title>
+  <link rel="icon" type="image/png" href="../images/logansQR.png" sizes="250x250">
+  <link rel="canonical" href="https://loganmjones.github.io/CAD-CADP-explorer/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "name": "Predation increases species turnover and structural stability in ecological communities",
+    "author": [
+      {"@type": "Person", "name": "Logan Jones"},
+      {"@type": "Person", "name": "Jonas Wickman"},
+      {"@type": "Person", "name": "Nasser Rabi"},
+      {"@type": "Person", "name": "Christopher A. Klausmeier"}
+    ],
+    "url": "https://loganmjones.github.io/CAD-CADP-explorer/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "W.K. Kellogg Biological Station, Michigan State University"
+    }
+  }
   </script>
+</head>
+<body class="kbs-poster-page">
+  <a class="kbs-skip" href="#poster">Skip to poster</a>
+
+  <div class="kbs-chrome">
+    <a href="https://loganjones.org/">← Logan Jones</a>
+    <span class="kbs-wip" role="status">Interactive digital twin</span>
+    <a href="#results-h">Jump to results</a>
+  </div>
+
+  <main class="poster-shell" id="poster">
+    <div class="poster-board">
+    <header class="poster-banner">
+      <div class="poster-banner__logos-left">
+        <a href="https://www.kbs.msu.edu/about-kbs/" target="_blank" rel="noopener noreferrer" aria-label="Kellogg Biological Station (opens in new tab)">
+          <img src="https://loganjones.org/images/kbs-poster/KBS_signature_vector_green.png" alt="Kellogg Biological Station" width="300" height="82">
+        </a>
+      </div>
+
+      <div class="poster-banner__title">
+        <h1>Predation increases species turnover and structural stability in ecological communities</h1>
+        <p class="poster-banner__authors"><a href="https://loganjones.org/">Logan Jones</a>, <a href="https://www.kl-lab.group/people#h.eebyqropi5ag" target="_blank" rel="noopener noreferrer">Jonas Wickman</a>, <a href="https://www.kl-lab.group/people#h.5ou9ank6gk4h" target="_blank" rel="noopener noreferrer">Nasser Rabi</a>, <a href="https://www.kl-lab.group/people#h.eco6uv4jy612" target="_blank" rel="noopener noreferrer">Christopher A. Klausmeier</a></p>
+        <p class="poster-banner__meta">
+          <a href="https://loganjones.org/templates/contact">Contact</a>
+          <span aria-hidden="true"> · </span>
+          <a href="#abstract">Abstract</a>
+          <span aria-hidden="true"> · </span>
+          <a href="#bibliography">References</a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://www.kbs.msu.edu/education/undergraduate/reu/" target="_blank" rel="noopener noreferrer">KBS REU Program</a>
+        </p>
+      </div>
+
+      <div class="poster-banner__logos-right">
+        <a href="https://www.kl-lab.group/" target="_blank" rel="noopener noreferrer" aria-label="Klausmeier–Litchman Lab (opens in new tab)">
+          <img class="logo-lab" src="https://loganjones.org/images/kbs-poster/klaus_litch_logo.png?v=7" alt="Klausmeier–Litchman Lab" width="200" height="160">
+        </a>
+      </div>
+    </header>
+
+    <div class="poster-grid">
+      <div class="poster-main">
+      <section class="poster-box area-bg" aria-labelledby="bg-h">
+        <h2 class="poster-box__header" id="bg-h">Background</h2>
+        <div class="poster-box__body">
+          <p>
+            A mechanistic understanding of species coexistence is a central pursuit in ecology. Prior eco-evolutionary models show that seasonal temperature fluctuation can facilitate coexistence through the <em>storage effect</em> – species with differing traits can coexist if their gains in good times exceed their losses in bad times. However, the role of predation in shaping coexistence and diversity is less well understood. We compare two models, with and without predation, to explore its effects on emergent community structure and stability.
+          </p>
+        </div>
+      </section>
+
+        <div class="poster-main__lower">
+      <section class="poster-box area-methods" aria-labelledby="methods-h">
+        <h2 class="poster-box__header" id="methods-h">Methods</h2>
+        <div class="poster-box__body methods-body">
+          <div class="method-row">
+            <figure class="method-row__fig">
+              <img src="https://loganjones.org/images/kbs-poster/tamp_forcing.png?v=4" alt="Seasonal temperature forcing over one period for several temperature amplitudes" width="600" height="400" loading="lazy">
+              <figcaption class="fig-cap"><strong>Fig. 1.</strong> How temperature is modeled over one season (τ), for several amplitudes (<em>T</em><sub>amp</sub>).</figcaption>
+            </figure>
+            <div class="method-row__text">
+              <h3>How temp. changes</h3>
+              <p>Our model uses seasonal temperature fluctuation (<em>T</em><sub>amp</sub>) to study the evolution of thermal optima and its impact on species coexistence.</p>
+            </div>
+          </div>
+
+          <div class="method-row">
+            <figure class="method-row__fig">
+              <img src="https://loganjones.org/images/kbs-poster/eco_dynamics.png?v=4" alt="Species densities settling into a repeating seasonal limit cycle" width="600" height="400" loading="lazy">
+              <figcaption class="fig-cap"><strong>Fig. 2.</strong> Species densities once the community settles into a repeating seasonal pattern (a limit cycle), shown over one full season (τ).</figcaption>
+            </figure>
+            <div class="method-row__text">
+              <h3>Finding a stable seasonal cycle</h3>
+              <p>First we simulate the density of our community over time. After a long simulation we find a periodic solution to the ecological dynamics, which repeats with the seasonal temperature.</p>
+            </div>
+          </div>
+
+          <div class="method-block method-block--left">
+            <h3 class="method-block__head-c">Survival of the fittest</h3>
+            <p>Next we allow thermal optima to evolve. These seed communities eventually reach an equilibrium where no other species can invade. We call these <em>Evolutionarily Stable Communities</em> (ESCs).</p>
+            <figure class="full-col-fig">
+              <img src="https://loganjones.org/images/kbs-poster/exploratory/trait_fitness_combo.png?v=4" alt="Thermal optima evolving on a fitness landscape toward an evolutionarily stable community" width="900" height="520" loading="lazy">
+              <figcaption class="fig-cap"><strong>Fig. 3.</strong> Thermal optima (<em>x</em>) evolving from a scattered start; each climbs the fitness landscape (λ) to a peak, where no new species can invade (an ESC).</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="poster-box area-results" aria-labelledby="results-h">
+        <h2 class="poster-box__header" id="results-h">Results</h2>
+        <div class="poster-box__body results-interactive">
+          <p class="fig-cap results-lede">
+            <strong>Fig. 4.</strong> Interactive community bifurcation diagrams: evolutionarily
+            stable community (ESC) trait values across seasonal amplitude
+            <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
+            Shading highlights structural stability: lighter represents a relatively wider range of environments
+            over which the community persists. Use the toggles and branch slider to explore.
+          </p>
+
+          <section id="panel-cad" class="model-panel" data-model="cad">
+            <div class="model-head">
+              <h3>Predator absent</h3>
+              <div class="toggles" aria-label="Display layers">
+                <label title="Dynamically + invasion stable (thick curves)."><input type="checkbox" data-layer="stable" checked /> Stable</label>
+                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
+                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
+                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" checked /> Trait guides</label>
+                <label title="Density-regime transitions."><input type="checkbox" data-annot="boundaries" checked /> Density transitions</label>
+              </div>
+              <div class="controls">
+                <label>Branch <select class="branch-menu"></select></label>
+                <label class="slider-wrap">Point <input type="range" class="point-slider" min="0" max="0" value="0" /></label>
+                <span class="status">loading…</span>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="bif-wrap">
+                <div class="bif plot" data-plot="bif"></div>
+                <div class="stab-cbar" aria-hidden="true">
+                  <div class="stab-cbar-bar"></div>
+                  <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
+                  <div class="stab-cbar-label">Structural stability</div>
+                </div>
+              </div>
+              <div class="side">
+                <div class="plot" data-plot="cycle-log"></div>
+                <div class="plot" data-plot="cycle-lin"></div>
+                <div class="plot" data-plot="fit"></div>
+                <div class="legend" data-legend></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="panel-cadp" class="model-panel" data-model="cadp">
+            <div class="model-head">
+              <h3>Predator present</h3>
+              <div class="toggles" aria-label="Display layers">
+                <label title="Dynamically + invasion stable (thick curves)."><input type="checkbox" data-layer="stable" checked /> Stable</label>
+                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
+                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
+                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" checked /> Trait guides</label>
+                <label title="Density-regime transitions."><input type="checkbox" data-annot="boundaries" checked /> Density transitions</label>
+              </div>
+              <div class="controls">
+                <label>Branch <select class="branch-menu"></select></label>
+                <label class="slider-wrap">Point <input type="range" class="point-slider" min="0" max="0" value="0" /></label>
+                <span class="status">loading…</span>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="bif-wrap">
+                <div class="bif plot" data-plot="bif"></div>
+                <div class="stab-cbar" aria-hidden="true">
+                  <div class="stab-cbar-bar"></div>
+                  <div class="stab-cbar-ticks"><span>Low</span><span>High</span></div>
+                  <div class="stab-cbar-label">Structural stability</div>
+                </div>
+              </div>
+              <div class="side">
+                <div class="plot" data-plot="cycle-log"></div>
+                <div class="plot" data-plot="cycle-lin"></div>
+                <div class="plot" data-plot="fit"></div>
+                <div class="legend" data-legend></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+
+        </div>
+      </div>
+      <div class="poster-side">
+      <section class="poster-box area-diversity" aria-labelledby="div-h">
+        <h2 class="poster-box__header" id="div-h">Diversity</h2>
+        <div class="poster-box__body">
+          <figure class="full-col-fig">
+            <img src="https://loganjones.org/images/kbs-poster/diversity_panels_compare.png?v=5" alt="Species diversity panels comparing predator-absent and predator-present models across seasonal amplitude" width="900" height="700" loading="lazy">
+            <figcaption class="fig-cap">
+              <strong>Fig. 5.</strong> Species diversity across seasonal amplitude
+              (<em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
+              α-diversity is average instantaneous species diversity,
+              γ-diversity is time-integrated species diversity, and
+              β-diversity is species turnover.
+              Predation decreases α alongside a relatively smaller decrease in γ;
+              the shift in their ratio drives higher average turnover, β.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="poster-box area-discussion" aria-labelledby="discussion-h">
+        <h2 class="poster-box__header" id="discussion-h">Discussion</h2>
+        <div class="poster-box__body">
+          <ul class="discussion-list">
+            <li><strong>Predation increases structural stability, widening the range of environments under which communities can stably coexist.</strong></li>
+            <li><strong>Introducing a predator increases species turnover, β.</strong></li>
+            <li><strong>Predation supports more species richness at lower temperature amplitudes ecologically, but these communities fail to persist once thermal optima are allowed to evolve.</strong></li>
+          </ul>
+          <p>
+            Our study implies that predation can foster communities that are more robust to varying amplitudes of temperature fluctuations, raising an exciting empirical question: does predation allow communities to remain qualitatively unchanged as temperature fluctuations intensify?
+          </p>
+        </div>
+      </section>
+
+      <section class="poster-box area-ack" aria-labelledby="ack-h">
+        <h2 class="poster-box__header" id="ack-h">Acknowledgments</h2>
+        <div class="poster-box__body">
+          <p class="ack-funding">
+            <strong>Funding:</strong> Douglas and Maria Bayer Scholarship Fund.
+          </p>
+          <p class="ack-thanks">
+            <strong>Thanks:</strong> Thank you to the KBS community, the Klausmeier-Litchman lab, and all who lent support. I couldn't have done it without you!
+          </p>
+
+          <div class="ack-footer-row">
+            <div class="ack-qr">
+              <a href="#bibliography" data-open-panel="bibliography" class="ack-qr-link" aria-label="Open full bibliography">
+                <img src="https://loganjones.org/images/kbs-poster/qr-code.png" alt="" width="140" height="140" loading="lazy">
+              </a>
+              <p class="ack-qr-caption">
+                Scan for digital twin, references, and further reading<br>
+                <span class="ack-qr-url">loganmjones.github.io/CAD-CADP-explorer</span>
+              </p>
+            </div>
+            <div class="ack-stack">
+              <a href="https://www.canr.msu.edu/research/agbioresearch/doug-and-maria-bayer-new-initiatives-fund-for-sustainable-agriculture" target="_blank" rel="noopener noreferrer" aria-label="Michigan State University (opens in new tab)">
+                <img src="https://loganjones.org/images/kbs-poster/Bayer_scholarship_green.png" alt="Douglas and Maria Bayer Scholarship Fund, Michigan State University" width="340" height="130" loading="lazy">
+              </a>
+              <img src="https://loganjones.org/images/kbs-poster/WSU_horizontal_purple_splatter.png" alt="Weber State University" width="320" height="80" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      </div>
+    </div>
+    </div>
+
+    <aside class="poster-materials" aria-label="Supplemental materials">
+      <details class="poster-panel" id="abstract">
+        <summary>Abstract</summary>
+        <div class="poster-panel__body">
+          <p class="poster-panel__lede">
+            <em>Top-down predation increases species turnover and structural stability in ecological communities</em>
+          </p>
+          <p>
+            A mechanistic understanding of species coexistence is a central pursuit in ecology. One factor known to enable coexistence is temporal variation of an environmental variable. Prior eco-evolutionary models show that seasonal temperature fluctuation can facilitate coexistence through the storage effect – species with differing traits can coexist if their gains in good times exceed their losses in bad times. However, the role of predation in shaping coexistence and diversity is less well understood. We compare two models, with and without predation, to assess its effects on emergent community structure and stability. Our analysis shows that introducing a predator increases species turnover (β-diversity). This effect is mediated by a decrease in average instantaneous species diversity (α-diversity) alongside a relatively smaller decrease in time-integrated species diversity (γ-diversity); the resulting shift in their ratio drives higher average turnover. We also find that predation provides communities with increased structural stability – widening the range of environments under which communities can stably coexist. Interestingly, this increase in turnover does not translate into more species-rich evolutionarily stable communities. Predation supports more species richness at lower temperature amplitudes in our ecological model, but these communities fail to persist once thermal optima are allowed to evolve. Our study implies that predation can foster communities that are more robust to varying amplitudes of temperature fluctuations, raising an exciting empirical question: does predation allow communities to remain qualitatively unchanged as temperature fluctuations intensify?
+          </p>
+          <p class="poster-panel__actions">
+            <a href="https://loganjones.org/files/kbs-abstract.pdf" target="_blank" rel="noopener noreferrer">Download abstract (PDF)</a>
+          </p>
+        </div>
+      </details>
+
+      <details class="poster-panel" id="bibliography">
+        <summary>Bibliography</summary>
+        <div class="poster-panel__body">
+          <ol class="ref-list ref-list--full">
+            <li>Anderson, S. C., Elsen, P. R., Hughes, B. B., Tonietto, R. K., Bletz, M. C., Gill, D. A., Holgerson, M. A., Kuebbing, S. E., McDonough MacKenzie, C., Meek, M. H. &amp; Veríssimo, D. (2021). Trends in ecology and conservation over eight decades. <em>Frontiers in Ecology and the Environment</em>, 19(5), 274–282. <a href="https://doi.org/10.1002/fee.2320">doi:10.1002/fee.2320</a></li>
+            <li>Beckage, B., Gross, L. J. &amp; Kauffman, S. (2011). The limits to prediction in ecological systems. <em>Ecosphere</em>, 2(11), art125. <a href="https://doi.org/10.1890/ES11-00211.1">doi:10.1890/ES11-00211.1</a></li>
+            <li>Brännström, Å., Johansson, J. &amp; von Festenberg, N. (2013). The Hitchhiker's Guide to Adaptive Dynamics. <em>Games</em>, 4(3), 304–328. <a href="https://doi.org/10.3390/g4030304">doi:10.3390/g4030304</a></li>
+            <li>Chesson, P. (2000). Mechanisms of Maintenance of Species Diversity. <em>Annual Review of Ecology, Evolution, and Systematics</em>, 31, 343–366. <a href="https://doi.org/10.1146/annurev.ecolsys.31.1.343">doi:10.1146/annurev.ecolsys.31.1.343</a></li>
+            <li>Holt, R. D. (1977). Predation, apparent competition, and the structure of prey communities. <em>Theoretical Population Biology</em>, 12(2), 197–229. <a href="https://doi.org/10.1016/0040-5809(77)90042-9">doi:10.1016/0040-5809(77)90042-9</a></li>
+            <li>Holt, R. D., Grover, J. &amp; Tilman, D. (1994). Simple rules for interspecific dominance in systems with exploitative and apparent competition. <em>The American Naturalist</em>, 144(5), 741–771. <a href="https://doi.org/10.1086/285705">doi:10.1086/285705</a></li>
+            <li>Kremer, C. T. &amp; Klausmeier, C. A. (2017). Species packing in eco-evolutionary models of seasonally fluctuating environments. <em>Ecology Letters</em>, 20(9), 1158–1168. <a href="https://doi.org/10.1111/ele.12813">doi:10.1111/ele.12813</a></li>
+            <li>Leibold, M. A., Chase, J. M. &amp; Ernest, S. K. M. (2017). Community assembly and the functioning of ecosystems: How metacommunity processes alter ecosystems attributes. <em>Ecology</em>, 98(4), 909–919. <a href="https://doi.org/10.1002/ecy.1697">doi:10.1002/ecy.1697</a></li>
+            <li>Lorenz, E. N. (1963). Deterministic Nonperiodic Flow. <em>Journal of the Atmospheric Sciences</em>, 20(2), 130–141. <a href="https://doi.org/10.1175/1520-0469(1963)020%3C0130:DNF%3E2.0.CO;2">doi:10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</a></li>
+            <li>Mouquet, N., Lagadeuc, Y., Devictor, V., Doyen, L., Duputié, A., Eveillard, D., Faure, D., Garnier, E., Gimenez, O., Huneman, P., Jabot, F., Jarne, P., Joly, D., Julliard, R., Kéfi, S., Kergoat, G. J., Lavorel, S., Le Gall, L., Meslin, L. &amp; Loreau, M. (2015). Predictive ecology in a changing world. <em>Journal of Applied Ecology</em>, 52(5), 1293–1310. <a href="https://doi.org/10.1111/1365-2664.12482">doi:10.1111/1365-2664.12482</a></li>
+            <li>Paine, R. T. (1966). Food Web Complexity and Species Diversity. <em>The American Naturalist</em>, 100(910), 65–75.</li>
+            <li>Saavedra, S., Rohr, R. P., Bascompte, J., Godoy, O., Kraft, N. J. B. &amp; Levine, J. M. (2017). A structural approach for understanding multispecies coexistence. <em>Ecological Monographs</em>, 87(3), 470–486. <a href="https://doi.org/10.1002/ecm.1263">doi:10.1002/ecm.1263</a></li>
+            <li>Slobodkin, L. B. (2001). Limits to Biodiversity (Species Packing). In S. A. Levin (Ed.), <em>Encyclopedia of Biodiversity</em> (2nd ed., pp. 642–648). Academic Press. <a href="https://doi.org/10.1016/B978-0-12-384719-5.00088-5">doi:10.1016/B978-0-12-384719-5.00088-5</a></li>
+          </ol>
+        </div>
+      </details>
+
+      <p class="poster-materials__quiet">
+        <a href="https://loganjones.org/" target="_blank" rel="noopener noreferrer">loganjones.org</a>
+        <span aria-hidden="true"> · </span>
+        <a href="https://loganjones.org/files/kbs-proposal.pdf" target="_blank" rel="noopener noreferrer">Original proposal (PDF)</a>
+      </p>
+    </aside>
+  </main>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="app.js"></script>
+  <script src="poster.js" defer></script>
 </body>
 </html>
