@@ -410,8 +410,19 @@ body.kbs-poster-page {
   border-radius: 4px;
 }
 
+.area-diversity .poster-box__body {
+  padding: 0.75rem 0.85rem 1rem;
+}
+
 .area-diversity .full-col-fig {
-  width: min(100%, 28rem);
+  margin: 0;
+  width: 100%;
+  max-width: none;
+}
+
+.area-diversity .full-col-fig img {
+  width: 100%;
+  height: auto;
 }
 
 .fig-cap {
