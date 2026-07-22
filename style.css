@@ -161,11 +161,11 @@ body.kbs-poster-page {
   margin: 0;
   font-family: "Source Sans 3", system-ui, sans-serif;
   font-weight: 700;
-  font-size: clamp(0.78rem, 2.05cqi, 2.05rem);
-  line-height: 1.15;
+  font-size: clamp(0.95rem, 2.2vw, 2.05rem);
+  line-height: 1.2;
   letter-spacing: -0.012em;
   color: #000;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .poster-banner__authors {
@@ -210,31 +210,28 @@ body.kbs-poster-page {
   outline-offset: 3px;
 }
 
-/* ---- Box grid: left stack (bg + methods|results) | right stack (diversity, discussion, ack) ---- */
+/* ---- Vertical scroll through poster sections ---- */
 .poster-grid {
   flex: 0 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 2.25fr) minmax(0, 0.9fr);
-  gap: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) + 0.35rem);
   margin-top: 0;
   align-items: stretch;
 }
 
 .poster-main,
-.poster-side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-  min-width: 0;
+.poster-side,
+.poster-main__lower {
+  display: contents;
 }
 
-.poster-main__lower {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr);
-  gap: var(--gap);
-  align-items: stretch;
-  min-width: 0;
-}
+.area-bg { order: 1; }
+.area-methods { order: 2; }
+.area-results { order: 3; }
+.area-diversity { order: 4; }
+.area-discussion { order: 5; flex: none; }
+.area-ack { order: 6; }
 
 .poster-box {
   display: flex;
@@ -249,7 +246,7 @@ body.kbs-poster-page {
 }
 
 .poster-main__lower .poster-box {
-  min-height: 100%;
+  min-height: 0;
 }
 
 .poster-box__header {
@@ -290,7 +287,15 @@ body.kbs-poster-page {
 }
 
 .area-discussion {
-  flex: 1 1 auto;
+  flex: none;
+}
+
+.area-discussion .poster-box__body {
+  justify-content: flex-start;
+}
+
+.discussion-list {
+  justify-content: flex-start;
 }
 
 /* Shared figures */
@@ -653,33 +658,6 @@ body.kbs-poster-page {
   .poster-banner__logos-left img {
     max-height: 78px;
     max-width: 200px;
-  }
-
-  .poster-grid {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-  }
-
-  .poster-main,
-  .poster-side,
-  .poster-main__lower {
-    display: contents;
-  }
-
-  .area-bg { order: 1; }
-  .area-methods { order: 2; }
-  .area-results { order: 3; }
-  .area-diversity { order: 4; }
-  .area-discussion { order: 5; flex: none; }
-  .area-ack { order: 6; }
-
-  .area-discussion .poster-box__body {
-    justify-content: flex-start;
-  }
-
-  .discussion-list {
-    justify-content: flex-start;
   }
 
   .method-row {
