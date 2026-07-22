@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.5">
+  <link rel="stylesheet" href="style.css?v=4.9">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -43,7 +43,10 @@
   <div class="kbs-chrome">
     <a href="https://loganjones.org/">← Logan Jones</a>
     <span class="kbs-wip" role="status">Interactive digital twin</span>
-    <a href="#results-h">Jump to results</a>
+    <nav class="kbs-chrome__jumps" aria-label="Page jumps">
+      <a href="#results-h">Jump to results</a>
+      <a href="#bibliography">Jump to references</a>
+    </nav>
   </div>
 
   <main class="poster-shell" id="poster">
@@ -98,7 +101,16 @@
             </figure>
             <div class="method-row__text">
               <h3>How temp. changes</h3>
-              <p>Our model uses seasonal temperature fluctuation (<em>T</em><sub>amp</sub>) to study the evolution of thermal optima and its impact on species coexistence.</p>
+              <p>
+                The trait we focus on is thermal optimum, such that populations have a set temperature
+                which facilitates their fastest growth. The temperature is periodically forced using sine
+                waves; this emulates real world temperature fluctuations in varying climate regimes,
+                smaller amplitude being analogous to the tropics, larger to more temperate regions.
+              </p>
+              <p>
+                Our model uses seasonal temperature fluctuation (<em>T</em><sub>amp</sub>) to study the
+                evolution of thermal optima and its impact on species coexistence.
+              </p>
             </div>
           </div>
 
@@ -109,14 +121,38 @@
             </figure>
             <div class="method-row__text">
               <h3>Finding a stable seasonal cycle</h3>
-              <p>First we simulate the density of our community over time. After a long simulation we find a periodic solution to the ecological dynamics, which repeats with the seasonal temperature.</p>
+              <p>
+                We begin our analysis by solving for ecological dynamics with empirically motivated
+                parameter values. This requires finding a stable attractor, in our model taking the form
+                of a limit cycle which begins and ends on the same value. This can be imagined as
+                representing the conditions late on December 31st leading to the dynamics early the
+                following morning, January 1st. This analysis simulates τ or one year of population
+                densities over time.
+              </p>
             </div>
           </div>
 
-          <div class="method-block method-block--left">
-            <h3 class="method-block__head-c">Survival of the fittest</h3>
-            <p>Next we allow thermal optima to evolve. These seed communities eventually reach an equilibrium where no other species can invade. We call these <em>Evolutionarily Stable Communities</em> (ESCs).</p>
-            <figure class="full-col-fig">
+          <div class="method-row method-row--evolve">
+            <div class="method-row__text">
+              <h3>Survival of the fittest</h3>
+              <p>
+                After obtaining our limit cycle we introduce trait based evolution, tracking thermal
+                optimum at the ecological attractor. This is justified by a separation of timescales
+                between ecological and evolutionary dynamics, that is, the ecological system has
+                stabilized before evolution enters the picture. To do this we use game theoretic framing
+                to find our communities evolutionarily stable strategy (ESS) – a community structure
+                where the population has adopted a trait which out-competes all other traits in a given
+                environment under natural selection. Species possessing these optimal traits are
+                uninvasible, since no mutant species can invade in their presence. This is followed by
+                finding those ESS which are perturbation stable – also known as an evolutionarily stable
+                community (ESC). Once this is done for our starting species, we find fitness landscapes
+                representing local minima and introduce new species where they can stably coexist,
+                computing their ESS and ESC using the prior techniques. We then sweep our parameter
+                space using numerical continuation and generate a bifurcation diagram showing how
+                communities structure themselves as our temperature amplitude grows.
+              </p>
+            </div>
+            <figure class="method-row__fig">
               <img src="https://loganjones.org/images/kbs-poster/exploratory/trait_fitness_combo.png?v=4" alt="Thermal optima evolving on a fitness landscape toward an evolutionarily stable community" width="900" height="520" loading="lazy">
               <figcaption class="fig-cap"><strong>Fig. 3.</strong> Thermal optima (<em>x</em>) evolving from a scattered start; each climbs the fitness landscape (λ) to a peak, where no new species can invade (an ESC).</figcaption>
             </figure>
@@ -132,17 +168,32 @@
             stable community (ESC) trait values across seasonal amplitude
             <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
             Shading highlights structural stability: lighter represents a relatively wider range of environments
-            over which the community persists. Use the toggles and branch slider to explore.
+            over which the community persists.
+            Generated at fixed parameters
+            <em>R</em><sub>tot</sub>&nbsp;=&nbsp;100 and τ&nbsp;=&nbsp;10
+            (seasonal period), with <em>T</em><sub>amp</sub> explored on [0,&nbsp;24].
           </p>
+
+          <div class="explore-help" aria-label="How to use the interactive diagrams">
+            <h3>How to explore</h3>
+            <ul>
+              <li><strong>Hover</strong> a curve to read <em>T</em><sub>amp</sub>, trait <em>x</em>, and stability class.</li>
+              <li><strong>Zoom</strong> by dragging a box on the bif plot (or scroll); use the mode-bar home icon to reset.</li>
+              <li><strong>Branch</strong> picks which community continuation to follow; <strong>Point</strong> slides along that branch.</li>
+              <li>Right-hand panels update with the selected point: seasonal densities (log &amp; linear) and the fitness landscape λ(<em>x</em>).</li>
+              <li>Background shading is structural stability; the dark outer funnel is the empty-niche (uninhabitable) region.</li>
+              <li>Toggles add dynamically unstable / invasion-unstable segments, trait guides, or density-transition dashes.</li>
+            </ul>
+          </div>
 
           <section id="panel-cad" class="model-panel" data-model="cad">
             <div class="model-head">
               <h3>Predator absent</h3>
               <div class="toggles" aria-label="Display layers">
                 <label title="Dynamically + invasion stable (thick curves)."><input type="checkbox" data-layer="stable" checked /> Stable</label>
-                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
-                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
-                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" checked /> Trait guides</label>
+                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" /> Dyn. unstable</label>
+                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" /> Invasion unstable</label>
+                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" /> Trait guides</label>
                 <label title="Dashed density-regime transitions (clipped to habitable region)."><input type="checkbox" data-annot="boundaries" /> Density transitions</label>
               </div>
               <div class="controls">
@@ -174,9 +225,9 @@
               <h3>Predator present</h3>
               <div class="toggles" aria-label="Display layers">
                 <label title="Dynamically + invasion stable (thick curves)."><input type="checkbox" data-layer="stable" checked /> Stable</label>
-                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" checked /> Dyn. unstable</label>
-                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" checked /> Invasion unstable</label>
-                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" checked /> Trait guides</label>
+                <label title="Dynamically unstable (thin lines)."><input type="checkbox" data-layer="dyn_unstable" /> Dyn. unstable</label>
+                <label title="Invasion-unstable (translucent)."><input type="checkbox" data-layer="inv_unstable" /> Invasion unstable</label>
+                <label title="Poster grid guides."><input type="checkbox" data-annot="guides" /> Trait guides</label>
                 <label title="Dashed density-regime transitions (clipped to habitable region)."><input type="checkbox" data-annot="boundaries" /> Density transitions</label>
               </div>
               <div class="controls">
@@ -320,7 +371,7 @@
     </aside>
   </main>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <script src="app.js?v=4.3"></script>
+  <script src="app.js?v=4.7"></script>
   <script src="poster.js" defer></script>
 </body>
 </html>

@@ -76,6 +76,13 @@ body.kbs-poster-page {
   text-decoration: underline;
 }
 
+.kbs-chrome__jumps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem 1rem;
+}
+
 .kbs-wip {
   display: inline-block;
   padding: 0.15rem 0.55rem;
@@ -320,7 +327,7 @@ body.kbs-poster-page {
 }
 
 .area-diversity .full-col-fig {
-  width: min(100%, 38rem);
+  width: min(100%, 28rem);
 }
 
 .fig-cap {
@@ -334,88 +341,72 @@ body.kbs-poster-page {
   font-family: "Source Sans 3", system-ui, sans-serif;
 }
 
-/* Methods: smaller figures, stronger copy */
+/* Methods: readable copy beside compact figures */
 .methods-body {
   display: flex;
   flex-direction: column;
-  gap: 1.35rem;
+  gap: 1.5rem;
 }
 
 .method-row {
   display: grid;
-  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
-  gap: 1.1rem 1.35rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr);
+  gap: 1rem 1.25rem;
+  align-items: start;
+}
+
+.method-row--evolve {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
 }
 
 .method-row__fig {
   margin: 0;
   min-width: 0;
-  max-width: 22rem;
-  justify-self: center;
+  max-width: 15rem;
+  justify-self: start;
 }
 
 .method-row__fig img {
   display: block;
   width: 100%;
+  max-height: 11.5rem;
   height: auto;
+  object-fit: contain;
   background: transparent;
   border-radius: 4px;
 }
 
+.method-row--evolve .method-row__fig img {
+  max-height: 14rem;
+}
+
 .method-row__fig .fig-cap {
   margin-top: 0.4rem;
+  font-size: 0.88em;
+  line-height: 1.4;
 }
 
 .method-row__text {
   min-width: 0;
 }
 
-.method-row__text h3,
-.method-block h3 {
-  margin: 0 0 0.45rem;
+.method-row__text h3 {
+  margin: 0 0 0.5rem;
   font-family: "Source Sans 3", system-ui, sans-serif;
-  font-size: 1.15em;
+  font-size: 1.22em;
   line-height: 1.25;
   color: #1f3f5f;
 }
 
-.method-row__text p,
-.method-block > p {
-  margin: 0;
-  font-size: 1.02em;
-  line-height: 1.55;
+.method-row__text p {
+  margin: 0 0 0.75em;
+  font-size: 1.06em;
+  line-height: 1.58;
+  max-width: none;
 }
 
-.method-block {
-  text-align: center;
-  margin-top: 0.15rem;
-  padding-top: 0.35rem;
-  border-top: 1px solid rgba(15, 40, 70, 0.12);
-}
-
-.method-block--left {
-  text-align: left;
-}
-
-.method-block__head-c {
-  text-align: center;
-}
-
-.method-block > p {
-  margin: 0 auto 0.75rem;
-  max-width: 44rem;
-}
-
-.method-block--left > p {
-  margin: 0 0 0.75rem;
-  max-width: 48rem;
-}
-
-.method-block .full-col-fig {
-  margin-top: 0.35rem;
-  text-align: left;
-  width: min(100%, 36rem);
+.method-row__text p:last-child {
+  margin-bottom: 0;
 }
 
 /* Discussion */
@@ -686,8 +677,14 @@ body.kbs-poster-page {
     max-width: 200px;
   }
 
-  .method-row {
+  .method-row,
+  .method-row--evolve {
     grid-template-columns: 1fr;
+  }
+
+  .method-row__fig {
+    max-width: 16rem;
+    justify-self: center;
   }
 
   .ack-footer-row {
@@ -743,6 +740,32 @@ body.kbs-poster-page {
   font-size: 1.02em;
   line-height: 1.5;
   max-width: 52rem;
+}
+
+.explore-help {
+  margin: 0.35rem 0 0.55rem;
+  padding: 0.85rem 1rem 0.95rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1.5px solid rgba(10, 10, 10, 0.35);
+  border-radius: 8px;
+}
+
+.explore-help h3 {
+  margin: 0 0 0.45rem;
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  font-size: 1.12em;
+  color: #1f3f5f;
+}
+
+.explore-help ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.explore-help li {
+  line-height: 1.45;
 }
 
 .area-results .poster-box__body {

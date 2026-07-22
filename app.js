@@ -91,8 +91,10 @@ function paletteOf(data) {
   };
 }
 
-function stabilityHeatmap(band, ylim) {
-  // softeness: 0 = high structural stability (light), 1 = low (dark)
+function stabilityHeatmap(band, ylim, colors) {
+  // softness: 0 = high structural stability (light blue), 1 = low (dark)
+  const light = (colors && colors.light) || BAND_LIGHT;
+  const dark = (colors && colors.dark) || BAND_DARK;
   const z = [band.softness, band.softness];
   return {
     type: "heatmap",
@@ -100,14 +102,15 @@ function stabilityHeatmap(band, ylim) {
     y: ylim,
     z,
     colorscale: [
-      [0, BAND_LIGHT],
-      [1, BAND_DARK],
+      [0, light],
+      [1, dark],
     ],
     zmin: 0,
     zmax: 1,
     showscale: false,
     hoverinfo: "skip",
-    opacity: 0.9,
+    hoverongaps: false,
+    opacity: 1,
   };
 }
 
@@ -145,55 +148,107 @@ function nicheField(niche) {
   return null;
 }
 
-/** Uninhabitable funnel — soft edge (not binary blocks). */
-function nicheHeatmap(niche, nicheColor) {
+function lerpRgb(a, b, t) {
+  const p = (rgb) => {
+    const m = String(rgb).match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (m) return [Number(m[1]), Number(m[2]), Number(m[3])];
+    if (String(rgb).startsWith("#") && rgb.length === 7) {
+      return [
+        parseInt(rgb.slice(1, 3), 16),
+        parseInt(rgb.slice(3, 5), 16),
+        parseInt(rgb.slice(5, 7), 16),
+      ];
+    }
+    return [222, 237, 252];
+  };
+  const A = p(a);
+  const B = p(b);
+  const u = Math.max(0, Math.min(1, t));
+  return `rgb(${Math.round(A[0] + (B[0] - A[0]) * u)},${Math.round(
+    A[1] + (B[1] - A[1]) * u
+  )},${Math.round(A[2] + (B[2] - A[2]) * u)})`;
+}
+
+/**
+ * One background heatmap: light→dark blue structural stability in the
+ * habitable funnel, solid gray outside. Plotly cannot composite two
+ * stacked heatmaps, which previously left plot_bgcolor (dark gray) showing.
+ */
+function bifBackgroundHeatmap(data, pal) {
+  const band = data.stability_band;
+  const niche = data.niche;
   const field = nicheField(niche);
-  if (!field || !niche.T || !niche.x) return null;
+  const ylim = data.axis.ylim;
+  const light = pal.light || BAND_LIGHT;
+  const dark = pal.dark || BAND_DARK;
+  const nicheGray = pal.niche || AXIS_BG;
+
+  if (!band || !band.T || !band.softness) {
+    return {
+      type: "heatmap",
+      x: data.axis.xlim,
+      y: ylim,
+      z: [
+        [0, 0],
+        [0, 0],
+      ],
+      colorscale: [
+        [0, light],
+        [1, light],
+      ],
+      zmin: 0,
+      zmax: 1,
+      showscale: false,
+      hoverinfo: "skip",
+    };
+  }
+
+  if (!field || !niche.T || !niche.x) return stabilityHeatmap(band, ylim, pal);
+
   const nT = niche.T.length;
   const nX = niche.x.length;
-  // Stored Tamp-major rows; Plotly wants z[iy][iT]
+  const softT = band.T;
+  const softV = band.softness;
+  const softAt = new Float64Array(nT);
+  let j = 0;
+  for (let i = 0; i < nT; i++) {
+    const T = niche.T[i];
+    while (j < softT.length - 1 && Math.abs(softT[j + 1] - T) <= Math.abs(softT[j] - T)) j++;
+    softAt[i] = softV[j];
+  }
+
+  // z in [0,1] = stability softness (blue); z in (1,2] = uninhabitable gray
+  const EDGE = 0.5;
   const z = new Array(nX);
   for (let ix = 0; ix < nX; ix++) {
     const row = new Array(nT);
     for (let iT = 0; iT < nT; iT++) {
-      row[iT] = field[iT][ix];
+      const u = field[iT][ix];
+      if (u >= EDGE) {
+        row[iT] = 1 + Math.min(1, Math.max(0, (u - EDGE) / Math.max(1e-6, 1 - EDGE)));
+      } else {
+        row[iT] = softAt[iT];
+      }
     }
     z[ix] = row;
   }
-  // Parse niche gray → rgba stops for a smooth fade into uninhabitable
-  const solid = nicheColor.startsWith("#")
-    ? nicheColor
-    : nicheColor.replace(/^rgb\(/, "rgba(").includes("rgba")
-      ? nicheColor
-      : nicheColor.replace("rgb(", "rgba(").replace(")", ",1)");
-  const toRgba = (a) => {
-    if (solid.startsWith("#") && solid.length === 7) {
-      const r = parseInt(solid.slice(1, 3), 16);
-      const g = parseInt(solid.slice(3, 5), 16);
-      const b = parseInt(solid.slice(5, 7), 16);
-      return `rgba(${r},${g},${b},${a})`;
-    }
-    if (solid.startsWith("rgb(")) return solid.replace("rgb(", "rgba(").replace(")", `,${a})`);
-    if (solid.startsWith("rgba(")) return solid.replace(/,\s*[\d.]+\)$/, `,${a})`);
-    return `rgba(77,92,110,${a})`;
-  };
+
   return {
     type: "heatmap",
     x: niche.T,
     y: niche.x,
     z,
     colorscale: [
-      [0.0, toRgba(0)],
-      [0.25, toRgba(0)],
-      [0.45, toRgba(0.35)],
-      [0.65, toRgba(0.75)],
-      [1.0, toRgba(1)],
+      [0.0, light],
+      [0.5, dark],
+      [0.51, nicheGray],
+      [1.0, nicheGray],
     ],
     zmin: 0,
-    zmax: 1,
-    zsmooth: "best",
+    zmax: 2,
     showscale: false,
     hoverinfo: "skip",
+    hoverongaps: false,
     opacity: 1,
   };
 }
@@ -275,11 +330,7 @@ function boundaryTraces(data, show) {
 function bifTraces(data, layersOn, annotOn) {
   const pal = paletteOf(data);
   const traces = [];
-  traces.push(stabilityHeatmap(data.stability_band, data.axis.ylim));
-
-  const niche = nicheHeatmap(data.niche, pal.niche);
-  const hasNiche = !!niche;
-  if (niche) traces.push(niche);
+  traces.push(bifBackgroundHeatmap(data, pal));
 
   const guide = guideTraces(data, annotOn.guides);
   const bounds = boundaryTraces(data, annotOn.boundaries);
@@ -302,7 +353,10 @@ function bifTraces(data, layersOn, annotOn) {
             opacity: isPoint ? 1 : style.opacity,
             connectgaps: false,
             visible: layersOn[layer],
-            hoverinfo: "skip",
+            hovertemplate:
+              "T<sub>amp</sub> = %{x:.2f}<br>x = %{y:.2f}<br>" +
+              layerLabel(layer) +
+              "<extra></extra>",
             showlegend: false,
           };
           if (isPoint) {
@@ -327,37 +381,58 @@ function bifTraces(data, layersOn, annotOn) {
     x: [],
     y: [],
     marker: { color: "#111", size: 9 },
-    hoverinfo: "skip",
+    hovertemplate: "Selected point<br>T<sub>amp</sub> = %{x:.2f}<br>x = %{y:.2f}<extra></extra>",
     showlegend: false,
   });
 
   return {
     traces,
-    hasNiche,
     nGuide: guide.length,
     nBound: bounds.length,
     layerVis,
   };
 }
 
-function sideLayout(title, yTitle, yType) {
+function layerLabel(layer) {
+  if (layer === "stable") return "Stable (dyn. + invasion)";
+  if (layer === "dyn_unstable") return "Dynamically unstable";
+  if (layer === "inv_unstable") return "Invasion unstable";
+  return layer;
+}
+
+function axisTitle(text, fontSize = 11) {
+  return { text, font: { size: fontSize, color: "#142033" }, standoff: 10 };
+}
+
+function sideLayout(title, xTitle, yTitle, yType) {
   return {
-    margin: { t: 28, r: 12, b: 36, l: 48 },
-    title: { text: title, font: { size: 12, color: "#142033" } },
+    margin: { t: 34, r: 16, b: 52, l: 62 },
+    title: {
+      text: title,
+      font: { size: 12, color: "#142033" },
+      y: 0.98,
+      yanchor: "top",
+    },
     xaxis: {
-      title: "t",
-      titlefont: { size: 11 },
+      title: axisTitle(xTitle),
       tickfont: { size: 10 },
+      tickformat: ".2f",
+      hoverformat: ".2f",
+      automargin: true,
       fixedrange: true,
       gridcolor: "rgba(20,32,51,0.08)",
+      zeroline: false,
     },
     yaxis: {
-      title: yTitle,
+      title: axisTitle(yTitle),
       type: yType || "linear",
-      titlefont: { size: 11 },
       tickfont: { size: 10 },
+      tickformat: ".2f",
+      hoverformat: ".2f",
+      automargin: true,
       fixedrange: true,
       gridcolor: "rgba(20,32,51,0.08)",
+      zeroline: false,
     },
     showlegend: false,
     paper_bgcolor: "rgba(0,0,0,0)",
@@ -378,18 +453,28 @@ class ModelPanel {
     this.logEl = root.querySelector('[data-plot="cycle-log"]');
     this.linEl = root.querySelector('[data-plot="cycle-lin"]');
     this.fitEl = root.querySelector('[data-plot="fit"]');
-    this.layersOn = { stable: true, dyn_unstable: true, inv_unstable: true };
-    // Guides on; density-transition dashes off by default
-    this.annotOn = { guides: true, boundaries: false };
+    this.layersOn = { stable: true, dyn_unstable: false, inv_unstable: false };
+    // Stable curves only; guides / density dashes off until requested
+    this.annotOn = { guides: false, boundaries: false };
     this.branchIdx = 0;
     this.pointIdx = 0;
     this._bifReady = false;
     this._sidesReady = false;
     this._raf = 0;
     this._pendingIdx = null;
-    this._hasNiche = false;
     this._nGuide = 0;
     this._nBound = 0;
+  }
+
+  /** Force checkbox UI to match intended defaults (browsers may restore old form state). */
+  applyDefaultToggles() {
+    this.root.querySelectorAll(".toggles input[data-layer]").forEach((el) => {
+      el.checked = el.dataset.layer === "stable";
+    });
+    this.root.querySelectorAll(".toggles input[data-annot]").forEach((el) => {
+      el.checked = false;
+    });
+    this.readToggles();
   }
 
   readToggles() {
@@ -424,7 +509,7 @@ class ModelPanel {
   }
 
   async init() {
-    this.readToggles();
+    this.applyDefaultToggles();
     this.fillMenu();
     this.bind();
     await Promise.all([this.drawBif(), this.initSidePlots()]);
@@ -455,44 +540,50 @@ class ModelPanel {
   }
 
   async drawBif() {
-    const { traces, hasNiche, nGuide, nBound, layerVis } = bifTraces(
+    const { traces, nGuide, nBound, layerVis } = bifTraces(
       this.data,
       this.layersOn,
       this.annotOn
     );
-    this._hasNiche = hasNiche;
     this._nGuide = nGuide;
     this._nBound = nBound;
     this._layerVis = layerVis;
     const ax = this.data.axis;
     const layout = {
-      margin: { t: 40, r: 18, b: 52, l: 58 },
+      margin: { t: 44, r: 20, b: 58, l: 64 },
       title: {
         text: this.data.title,
         font: { size: 16, color: "#142033", family: "Palatino Linotype, Palatino, Georgia, serif" },
       },
       xaxis: {
-        title: { text: "Amplitude, T_amp", font: { size: 13 } },
+        title: axisTitle("Amplitude, T_amp", 13),
         range: ax.xlim,
         tickvals: [0, 5, 10, 15, 20, 24],
+        tickformat: ".2f",
+        hoverformat: ".2f",
+        automargin: true,
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
         fixedrange: false,
         tickfont: { size: 11 },
       },
       yaxis: {
-        title: { text: "Trait, x", font: { size: 13 } },
+        title: axisTitle("Trait, x", 13),
         range: ax.ylim,
         tickvals: [-24, -20, -15, -10, -5, 0, 5, 10, 15, 20, 24],
+        tickformat: ".2f",
+        hoverformat: ".2f",
+        automargin: true,
         gridcolor: "rgba(0,0,0,0)",
         zeroline: false,
         fixedrange: false,
         tickfont: { size: 11 },
       },
       paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: AXIS_BG,
+      plot_bgcolor: BAND_LIGHT,
       showlegend: false,
       dragmode: "zoom",
+      hovermode: "closest",
       uirevision: "bif",
     };
     await Plotly.newPlot(this.bifEl, traces, layout, BIF_PLOT_CFG);
@@ -501,9 +592,8 @@ class ModelPanel {
 
   applyVisibility() {
     if (!this._bifReady) return;
-    // trace order: heatmap + optional niche + guides + boundaries + layers + marker
+    // trace order: background heatmap + guides + boundaries + layers + marker
     const vis = [true];
-    if (this._hasNiche) vis.push(true);
     for (let i = 0; i < this._nGuide; i++) vis.push(this.annotOn.guides);
     for (let i = 0; i < this._nBound; i++) vis.push(this.annotOn.boundaries);
     for (const layer of this._layerVis || []) vis.push(this.layersOn[layer]);
@@ -558,13 +648,15 @@ class ModelPanel {
         showlegend: false,
       },
     ];
-    const linLayout = sideLayout("Density", "n", "linear");
+    const linLayout = sideLayout("Density", "Time, t", "Density, n", "linear");
     linLayout.yaxis.range = [0, this.data.Rtot];
+    const logLayout = sideLayout("Density (log)", "Time, t", "log Density, n", "linear");
+    const fitLayout = sideLayout("Fitness landscape", "Trait, x", "Fitness, λ", "linear");
     await Promise.all([
       Plotly.newPlot(
         this.logEl,
         cycleTraces.map((tr) => ({ ...tr })),
-        sideLayout("Density (log)", "n", "log"),
+        logLayout,
         PLOT_CFG
       ),
       Plotly.newPlot(
@@ -573,7 +665,7 @@ class ModelPanel {
         linLayout,
         PLOT_CFG
       ),
-      Plotly.newPlot(this.fitEl, fitTraces, sideLayout("Fitness landscape", "λ", "linear"), PLOT_CFG),
+      Plotly.newPlot(this.fitEl, fitTraces, fitLayout, PLOT_CFG),
     ]);
     this._sidesReady = true;
   }
@@ -599,7 +691,7 @@ class ModelPanel {
     const t = br.t;
     const S = this.data.S_max;
 
-    this.status.textContent = `idx = ${pt.idx}, T_amp = ${Number(Tamp).toPrecision(4)}`;
+    this.status.textContent = `idx = ${pt.idx}, T_amp = ${Number(Tamp).toFixed(2)}`;
 
     const nMark = this.bifEl.data.length - 1;
     Plotly.restyle(this.bifEl, { x: [xs.map(() => Tamp)], y: [xs] }, [nMark]);
@@ -619,7 +711,8 @@ class ModelPanel {
         const v = row[i];
         const ok = Number.isFinite(v);
         linRow[i] = ok ? v : null;
-        logRow[i] = ok && v > 0 ? v : null;
+        // Natural log densities (model state); ticks read as -1, -2, …
+        logRow[i] = ok && v > 0 ? Math.log(v) : null;
       }
       yLog[s] = logRow;
       yLin[s] = linRow;
@@ -646,7 +739,7 @@ class ModelPanel {
     for (let i = 0; i < xs.length; i++) {
       const color = cols[preyStart + i] || cols[i] || "#333";
       labels.push(
-        `<span style="color:${color}"><i class="swatch"></i>x=${Number(xs[i]).toPrecision(3)}</span>`
+        `<span style="color:${color}"><i class="swatch"></i>x=${Number(xs[i]).toFixed(2)}</span>`
       );
     }
     this.legend.innerHTML = labels.join("");
