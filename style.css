@@ -1121,28 +1121,42 @@ body.kbs-poster-page {
     width: 100%;
   }
 
-  .bif.plot {
-    min-height: 240px;
-    max-height: min(42vh, 18rem);
-  }
-}
-
-@media (max-width: 640px) {
   .stack {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1.05fr) minmax(7.5rem, 0.7fr);
+    gap: 0.3rem;
   }
 
   .bif.plot {
-    min-height: 220px;
-    max-height: none;
-  }
-
-  .side {
-    grid-template-rows: none;
-    grid-template-columns: 1fr;
+    min-height: 200px;
+    max-height: min(38vh, 16rem);
   }
 
   .side .plot {
-    min-height: 110px;
+    min-height: 64px;
+  }
+
+  .stab-cbar {
+    padding-left: 1.2rem;
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .stack {
+    grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 0.78fr);
+    gap: 0.25rem;
+  }
+
+  .bif.plot {
+    min-height: 180px;
+    max-height: min(34vh, 14rem);
+  }
+
+  .side .plot {
+    min-height: 56px;
+  }
+
+  .side {
+    gap: 0.22rem;
   }
 }
