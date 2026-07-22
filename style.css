@@ -852,25 +852,38 @@ body.kbs-poster-page {
   width: 100%;
 }
 
+.results-compare {
+  margin: 0;
+  width: 100%;
+}
+
+.results-compare img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  background: transparent;
+}
+
 .results-lede {
-  margin: 0 0 0.15rem;
+  margin: 0.55rem 0 0;
   text-align: left;
   font-size: 1.02em;
   line-height: 1.5;
-  max-width: 52rem;
-}
-
-.results-lede--below {
-  margin: 1rem 0 0;
   max-width: none;
 }
 
 .explore-help {
-  margin: 0.35rem 0 0.55rem;
+  margin: 0.15rem 0 0.35rem;
   padding: 0.85rem 1rem 0.95rem;
   background: rgba(255, 255, 255, 0.55);
   border: 1.5px solid rgba(10, 10, 10, 0.35);
   border-radius: 8px;
+}
+
+.explore-help__lede {
+  margin: 0 0 0.55rem;
+  line-height: 1.45;
 }
 
 .explore-help h3 {
