@@ -561,6 +561,17 @@ body.kbs-poster-page {
   text-align: left;
 }
 
+.method-block--model .full-col-fig {
+  width: min(100%, 28rem);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.method-block--model .full-col-fig .fig-cap {
+  text-align: left;
+}
+
 /* Discussion */
 .area-discussion {
   display: flex;

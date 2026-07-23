@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6.8">
+  <link rel="stylesheet" href="style.css?v=6.9">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -110,6 +110,25 @@
       <section class="poster-box area-methods" aria-labelledby="methods-h">
         <h2 class="poster-box__header" id="methods-h">Methods</h2>
         <div class="poster-box__body methods-body">
+          <div class="method-block method-block--left method-block--model">
+            <h3 class="method-block__head-c">The model</h3>
+            <p>
+              We compare nested consumer–resource models with and without a predator.
+              Outer equations include predation; the inner box is the predator-absent subset.
+              Fixed parameters are held constant; <em>T</em><sub>amp</sub> is the continuation parameter.
+            </p>
+            <figure class="full-col-fig">
+              <img
+                src="images/model_definitions.png?v=1"
+                alt="Nested predator-present and predator-absent model equations with state variables, fixed parameters, and explored seasonal amplitude"
+                width="1000"
+                height="1200"
+                loading="lazy"
+              >
+              <figcaption class="fig-cap"><strong>The model.</strong> Predator present (outer) nests the predator-absent equations (inner); −<em>aP</em> and −<em>P</em> complete the predator-present forms. Keys list state variables, fixed parameters, and the explored amplitude <em>T</em><sub>amp</sub>.</figcaption>
+            </figure>
+          </div>
+
           <div class="method-row">
             <figure class="method-row__fig">
               <img src="https://loganjones.org/images/kbs-poster/tamp_forcing.png?v=4" alt="Seasonal temperature forcing over one period for several temperature amplitudes" width="600" height="400" loading="lazy">
