@@ -7,17 +7,17 @@
   <meta name="author" content="Logan Jones">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Predation increases species turnover and structural stability in ecological communities">
-  <meta property="og:description" content="Predation increases species turnover and structural stability in ecological communities — KBS REU research poster.">
+  <meta property="og:description" content="Predation increases species turnover and structural stability in ecological communities. KBS REU research poster.">
   <meta property="og:url" content="https://loganmjones.github.io/CAD-CADP-explorer/">
-  <meta property="og:image" content="https://loganjones.org/images/kbs-poster/bif_stable_compare.png?v=5">
+  <meta property="og:image" content="https://loganmjones.github.io/CAD-CADP-explorer/images/bif_stable_compare.png">
   <meta name="twitter:card" content="summary_large_image">
   <title>KBS Poster · Predation, turnover &amp; structural stability</title>
-  <link rel="icon" type="image/png" href="../images/logansQR.png" sizes="250x250">
+  <link rel="icon" type="image/png" href="https://loganjones.org/images/logansQR.png" sizes="250x250">
   <link rel="canonical" href="https://loganmjones.github.io/CAD-CADP-explorer/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6.9">
+  <link rel="stylesheet" href="style.css?v=8.8">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -38,37 +38,39 @@
   </script>
 </head>
 <body class="kbs-poster-page">
-  <a class="kbs-skip" href="#poster">Skip to poster</a>
+  <a class="kbs-skip" href="#explore">Skip to explore</a>
 
   <div class="kbs-chrome">
     <a class="kbs-chrome__home" href="https://loganjones.org/">← Logan Jones</a>
     <span class="kbs-wip" role="status">Interactive digital twin</span>
   </div>
 
-  <nav class="section-jump" id="section-jump" aria-label="Jump to poster section">
+  <nav class="section-jump" id="section-jump" aria-label="Jump to section">
     <a href="#poster" class="section-jump__home">Top</a>
     <div class="section-jump__links">
-      <a href="#bg-h">Background</a>
+      <a href="#explore">Explore</a>
+      <a href="#project-h">Project</a>
+      <a href="#adaptive-dynamics">Adaptive dynamics</a>
       <a href="#methods-h">Methods</a>
-      <a href="#results-h">Results</a>
-      <a href="#panel-explore">Interactive</a>
-      <a href="#div-h">Diversity</a>
+      <a href="#results-h">Key results</a>
+      <a href="#div-h">Turnover</a>
       <a href="#discussion-h">Discussion</a>
       <a href="#ack-h">Acknowledgments</a>
+      <a href="#math-quirks">Math quirks</a>
       <a href="#abstract" data-open-panel="abstract">Abstract</a>
       <a href="#proposal" data-open-panel="proposal">Proposal</a>
       <a href="#bibliography" data-open-panel="bibliography">References</a>
     </div>
   </nav>
 
-  <a href="#poster" class="back-top" id="back-top" aria-label="Return to top of poster">Top</a>
+  <a href="#poster" class="back-top" id="back-top" aria-label="Return to top">Top</a>
 
   <main class="poster-shell" id="poster">
     <div class="poster-board">
     <header class="poster-banner">
       <div class="poster-banner__logos-left">
         <a href="https://www.kbs.msu.edu/about-kbs/" target="_blank" rel="noopener noreferrer" aria-label="Kellogg Biological Station (opens in new tab)">
-          <img src="https://loganjones.org/images/kbs-poster/KBS_signature_vector_green.png" alt="Kellogg Biological Station" width="300" height="82">
+          <img src="https://loganjones.org/images/kbs-poster/KBS_signature_vector_green.png" alt="Kellogg Biological Station" width="300" height="82" decoding="async">
         </a>
       </div>
 
@@ -90,105 +92,20 @@
 
       <div class="poster-banner__logos-right">
         <a href="https://www.kl-lab.group/" target="_blank" rel="noopener noreferrer" aria-label="Klausmeier–Litchman Lab (opens in new tab)">
-          <img class="logo-lab" src="https://loganjones.org/images/kbs-poster/klaus_litch_logo.png?v=7" alt="Klausmeier–Litchman Lab" width="200" height="160">
+          <img class="logo-lab" src="https://loganjones.org/images/kbs-poster/klaus_litch_logo.png?v=7" alt="Klausmeier–Litchman Lab" width="200" height="160" decoding="async">
         </a>
       </div>
     </header>
 
-    <div class="poster-grid">
-      <div class="poster-main">
-      <section class="poster-box area-bg" aria-labelledby="bg-h">
-        <h2 class="poster-box__header" id="bg-h">Background</h2>
-        <div class="poster-box__body">
-          <p>
-            A mechanistic understanding of species coexistence is a central pursuit in ecology. Prior eco-evolutionary models show that seasonal temperature fluctuation can facilitate coexistence through the <em>storage effect</em> – species with differing traits can coexist if their gains in good times exceed their losses in bad times. However, the role of predation in shaping coexistence and diversity is less well understood. We compare two models, with and without predation, to explore its effects on emergent community structure and stability.
-          </p>
-        </div>
-      </section>
+    <div class="story-stack">
 
-        <div class="poster-main__lower">
-      <section class="poster-box area-methods" aria-labelledby="methods-h">
-        <h2 class="poster-box__header" id="methods-h">Methods</h2>
-        <div class="poster-box__body methods-body">
-          <div class="method-block method-block--left method-block--model">
-            <h3 class="method-block__head-c">The model</h3>
-            <p>
-              We compare nested consumer–resource models with and without a predator.
-              Outer equations include predation; the inner box is the predator-absent subset.
-              Fixed parameters are held constant; <em>T</em><sub>amp</sub> is the continuation parameter.
-            </p>
-            <figure class="full-col-fig">
-              <img
-                src="https://loganjones.org/images/kbs-poster/model_definitions.png?v=3"
-                alt="Nested predator-present and predator-absent model equations with state variables, fixed parameters, and explored seasonal amplitude"
-                width="1000"
-                height="1200"
-                loading="lazy"
-              >
-              <figcaption class="fig-cap"><strong>The model.</strong> Predator present (outer) nests the predator-absent equations (inner); −<em>aP</em> and −<em>P</em> complete the predator-present forms. Keys list state variables, fixed parameters, and the explored amplitude <em>T</em><sub>amp</sub>.</figcaption>
-            </figure>
-          </div>
-
-          <div class="method-row">
-            <figure class="method-row__fig">
-              <img src="https://loganjones.org/images/kbs-poster/tamp_forcing.png?v=4" alt="Seasonal temperature forcing over one period for several temperature amplitudes" width="600" height="400" loading="lazy">
-              <figcaption class="fig-cap"><strong>Fig. 1.</strong> How temperature is modeled over one season (τ), for several amplitudes (<em>T</em><sub>amp</sub>).</figcaption>
-            </figure>
-            <div class="method-row__text">
-              <h3>How temp. changes</h3>
-              <p>Our model uses seasonal temperature fluctuation (<em>T</em><sub>amp</sub>) to study the evolution of thermal optima and its impact on species coexistence.</p>
-            </div>
-          </div>
-
-          <div class="method-row">
-            <figure class="method-row__fig">
-              <img src="https://loganjones.org/images/kbs-poster/eco_dynamics.png?v=4" alt="Species densities settling into a repeating seasonal limit cycle" width="600" height="400" loading="lazy">
-              <figcaption class="fig-cap"><strong>Fig. 2.</strong> Species densities once the community settles into a repeating seasonal pattern (a limit cycle), shown over one full season (τ).</figcaption>
-            </figure>
-            <div class="method-row__text">
-              <h3>Finding a stable seasonal cycle</h3>
-              <p>First we simulate the density of our community over time. After a long simulation we find a periodic solution to the ecological dynamics, which repeats with the seasonal temperature.</p>
-            </div>
-          </div>
-
-          <div class="method-block method-block--left">
-            <h3 class="method-block__head-c">Survival of the fittest</h3>
-            <p>Next we allow thermal optima to evolve. These seed communities eventually reach an equilibrium where no other species can invade. We call these <em>Evolutionarily Stable Communities</em> (ESCs).</p>
-            <figure class="full-col-fig">
-              <img src="https://loganjones.org/images/kbs-poster/exploratory/trait_fitness_combo.png?v=4" alt="Thermal optima evolving on a fitness landscape toward an evolutionarily stable community" width="900" height="520" loading="lazy">
-              <figcaption class="fig-cap"><strong>Fig. 3.</strong> Thermal optima (<em>x</em>) evolving from a scattered start; each climbs the fitness landscape (λ) to a peak, where no new species can invade (an ESC).</figcaption>
-            </figure>
-          </div>
-        </div>
-      </section>
-
-      <section class="poster-box area-results" aria-labelledby="results-h">
-        <h2 class="poster-box__header" id="results-h">Results</h2>
-        <div class="poster-box__body results-interactive">
-          <figure class="results-compare">
-            <div class="results-compare__media">
-              <img
-                src="https://loganjones.org/images/kbs-poster/bif_stable_compare.png?v=5"
-                alt="Community bifurcation diagrams comparing predator-absent (top) and predator-present (bottom) models across seasonal amplitude"
-                width="900"
-                height="1100"
-                loading="lazy"
-              >
-            </div>
-            <figcaption class="fig-cap results-lede">
-              <strong>Fig. 4.</strong> Community bifurcation diagrams: evolutionarily
-              stable community (ESC) trait values across seasonal amplitude
-              <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
-              Shading highlights structural stability: lighter represents a relatively wider range of environments
-              over which the community persists. Vertical dashed
-              lines mark qualitative transitions (by eye) in species densities; the small intervals between these dashed lines represent regions where species densities are quickly changing.
-            </figcaption>
-          </figure>
-
+      <details class="explore-details" id="explore">
+        <summary class="explore-details__summary">Explore the model</summary>
+        <div class="explore-details__body">
           <div class="explore-help" aria-label="How to use the interactive diagrams">
             <h3>How to explore</h3>
             <p class="explore-help__lede">
-              Interactive version of Fig. 4 — toggle predator absent vs present, then inspect branches, densities, and fitness landscapes.
+              Interactive version of Fig. 4: toggle predator absent vs present, then inspect branches, densities, and fitness landscapes.
             </p>
             <ul>
               <li><strong>Predator</strong> switches the whole bifurcation between predator absent and predator present (Fig. 4 top ↔ bottom).</li>
@@ -201,7 +118,7 @@
             </ul>
           </div>
 
-          <section id="panel-explore" class="model-panel">
+          <section id="panel-explore" class="model-panel" data-explorer-root>
             <div class="model-head">
               <h3 class="model-title">Predator absent</h3>
               <div class="toggles" aria-label="Display layers">
@@ -215,7 +132,7 @@
               <div class="controls">
                 <label>Branch <select class="branch-menu"></select></label>
                 <label class="slider-wrap">Point <input type="range" class="point-slider" min="0" max="0" value="0" /></label>
-                <span class="status">loading…</span>
+                <span class="status">Open to load…</span>
               </div>
             </div>
             <div class="stack">
@@ -236,25 +153,359 @@
             </div>
           </section>
         </div>
+      </details>
+
+      <section class="poster-box area-bg" aria-labelledby="project-h">
+        <h2 class="poster-box__header" id="project-h">Logan’s Ecology Project</h2>
+        <div class="poster-box__body story-body">
+          <div class="story-prose">
+            <p>
+              I’m Logan Jones, a recent applied math convert from the computer science department at Weber State University.
+              I spent my summer in a joint empirical and theoretical ecology lab at Michigan State's Kellogg Biological Station under Dr. Christopher Klausmeier and Dr. Elena Litchman.
+              I was placed in the theory lab, which specializes in using mathematical models and computer simulation to answer big questions in ecology.
+            </p>
+            <p>
+              A mechanistic understanding of species coexistence is a central pursuit in ecology. The aim of my project was to use a game-theoretic framework called adaptive dynamics to better understand how predation influences emergent community structure in environments with fluctuating temperature. We compare two models, with and without predation, to explore its effects on emergent community structure and stability.
+            </p>
+          </div>
+
+          <article class="show">
+            <h3 class="show__title">What happens with constant temperature?</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/tamp0_equilibrium_draw.gif" alt="Predator and prey densities settling to a constant equilibrium with no seasonality" width="1100" height="524" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  Population density over time, with each species’ thermal optima trait <em>x</em> in the key.
+                </p>
+                <p>
+                  A simple case, without temperature fluctuation in the environment. This can be thought of as a cell culture in a lab kept at constant temperature. Without temperature forcing, trait evolution is optimized for whichever species has the trait which is equal to the constant temperature value. No other coexisting species can survive in the constant temperature environment.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Temperature fluctuation allows for more species to coexist</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/bif_cadp_draw_transparent_notitle.gif" alt="Bifurcation diagram: the number of coexisting species grows as seasonal temperature amplitude increases" width="1200" height="640" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  The horizontal axis is not time, it is seasonal temperature fluctuation. As it increases, the number of coexisting species can also increase.
+                </p>
+                <p>
+                  Prior eco-evolutionary models show that seasonal temperature fluctuation can facilitate coexistence through the <em>storage effect</em> – species with differing traits can coexist if their gains in good times exceed their losses in bad times.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">My project came from a gap in my lab’s prior work</h3>
+            <figure class="show__fig show__fig--mid">
+              <img class="show__img show__img--flush" src="images/already_known_unknown.png" alt="The gap: does predation increase the number of coexisting species under seasonal temperature forcing, without migration?" width="2048" height="1152" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  The role of predation in shaping coexistence and diversity is less well understood. My project was to add a predator to an existing model which my lab had created to show that temperature fluctuation can increase the number of species coexisting in the microbial systems we are studying.
+                </p>
+              </figcaption>
+            </figure>
+            <h4 class="show__step">What we had from Kremer &amp; Klausmeier 2017</h4>
+            <figure class="show__fig show__fig--narrow">
+              <img class="show__img show__img--flush" src="images/model_predator_absent.png" alt="Predator-absent model equations" width="1039" height="894" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  I was tasked with adding a predator to the equation, literally! However what we really needed was some representation showing whether more species coexisted when a predator was present. To generate this representation we borrow from a framework called adaptive dynamics.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+        </div>
       </section>
 
 
+      <details class="explore-details story-details" id="adaptive-dynamics">
+        <summary class="explore-details__summary">What is Adaptive Dynamics?</summary>
+        <div class="explore-details__body story-body">
+          <div class="show__note">
+            <p>
+              A mathematical framework tailored to studying evolution. It extends evolutionary game theory to account for more realistic ecological dynamics, including:
+            </p>
+            <ul>
+              <li><strong>frequency dependent selection:</strong> fitness of a phenotype (trait) or genotype is dependent on how common or rare it is in a population</li>
+              <li><strong>density dependent selection:</strong> fitness of an organism depends on the population density of the organism</li>
+            </ul>
+            <p class="show__source">Brännström, Å., Johansson, J., &amp; von Festenberg, N. (2013). <a href="https://doi.org/10.3390/g4030304" target="_blank" rel="noopener noreferrer">The Hitchhiker’s Guide to Adaptive Dynamics</a>. <em>Games</em>, 4(3), 304–328.</p>
+          </div>
         </div>
-      </div>
-      <div class="poster-side">
+      </details>
+
+      <section class="poster-box area-methods" aria-labelledby="methods-h">
+        <h2 class="poster-box__header" id="methods-h">Methods</h2>
+        <div class="poster-box__body story-body">
+
+          <article class="show">
+            <h3 class="show__title">High level methods overview</h3>
+            <div class="show__steps">
+              <figure class="show__fig">
+                <h4 class="show__step">1. Ecology</h4>
+                <img class="show__img" src="images/methods_overview_1_ecology.gif" alt="Predator and prey densities repeating over seasons" width="2048" height="484" loading="lazy" decoding="async">
+                <figcaption class="show__cap">
+                  <p>We begin our analysis by solving for ecological dynamics with empirically motivated parameter values. This requires finding a stable attractor, in our model taking the form of a limit cycle of period τ which begins and ends on the same value.</p>
+                </figcaption>
+              </figure>
+              <figure class="show__fig">
+                <h4 class="show__step">2. Evolution</h4>
+                <img class="show__img" src="images/methods_overview_2_evolution.gif" alt="A thermal trait evolving over time toward its optimum" width="2048" height="484" loading="lazy" decoding="async">
+                <figcaption class="show__cap">
+                  <p>After obtaining our limit cycle we introduce trait based evolution, tracking thermal optimum at the ecological attractor.</p>
+                </figcaption>
+              </figure>
+              <figure class="show__fig">
+                <h4 class="show__step">3. Classify and continuation</h4>
+                <img class="show__img" src="images/methods_overview_3_continuation.gif" alt="A one-species community continued across seasonal amplitude" width="2048" height="484" loading="lazy" decoding="async">
+                <figcaption class="show__cap">
+                  <p>We use game theoretic framing to find evolutionarily stable strategies (ESS) and evolutionarily stable communities (ESC), then sweep parameter space with numerical continuation to generate bifurcation diagrams of community structure as temperature amplitude grows.</p>
+                </figcaption>
+              </figure>
+              <figure class="show__fig">
+                <h4 class="show__step">4. Add species and repeat</h4>
+                <img class="show__img" src="images/methods_overview_4_add_species.gif" alt="The one-species branch splitting into two species as amplitude grows" width="2048" height="484" loading="lazy" decoding="async">
+                <figcaption class="show__cap">
+                  <p>Each continuation run provides us with a single community’s branch, as such we start with one species and build from there. For the sake of presentation we only plot Evolutionarily stable communities on this site. To see unstable branches see the <a href="#explore">model explorer</a>.</p>
+                </figcaption>
+              </figure>
+            </div>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Setup</h3>
+            <figure class="show__fig show__fig--narrow">
+              <img class="show__img show__img--flush" src="images/setup_assumptions.png" alt="A zooplankton predator feeding on a community of phytoplankton" width="720" height="504" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  This is to help you picture the kinds of systems our model can be thought of as roughly emulating: a zooplankton, our predator, and a community of coexisting phytoplankton which he is feasting on indiscriminately.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show show--note">
+            <h3 class="show__title">Core assumptions</h3>
+            <div class="show__note">
+              <ul>
+                <li>Perfect density transfer between predator and prey as well as prey and the environment</li>
+                <li>No prey preference (generalist predator)</li>
+                <li>Mutations are small and rare → separation of ecological and evolutionary timescales (ecological dynamics reach an attractor prior to mutant invasion / evolutionary branching)</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">The Mathematical Model</h3>
+            <figure class="show__fig show__fig--model">
+              <img class="show__img show__img--plain" src="images/model_definitions_body.png" alt="Nested predator-present and predator-absent model equations with state variables and parameters" width="2284" height="3030" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  We use a system of differential equations in Julia, including one equation for each prey species coupled with a predator equation. So <em>dn<sub>i</sub>/dt</em> represents how the species densities change over time, with <em>dP/dt</em> doing the same for the predator density.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Competition for a shared resource</h3>
+            <figure class="show__fig show__fig--mid">
+              <img class="show__img" src="images/shared_resource.png" alt="Total density of species and predator against remaining resource over one season" width="2048" height="995" loading="lazy" decoding="async">
+              <img class="show__eq" src="images/eq_resource.png" alt="R equals R total minus the sum of prey densities minus predator density" width="912" height="175" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  Available resource at any given time is calculated by taking the total resource available in the environment and subtracting the total being used by coexisting species at that same time. Resource is a density with the same units as species densities.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Simulating a range of four season environments</h3>
+            <figure class="show__fig show__fig--mid">
+              <img class="show__img" src="images/four_season_environments.png" alt="Seasonal temperature forcing over one period for several amplitudes" width="2000" height="1322" loading="lazy" decoding="async">
+              <img class="show__eq" src="images/eq_forcing.png" alt="T of t equals mean temperature plus amplitude times sine of two pi t over tau" width="1004" height="136" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  We force temperature using a sine wave, with one cycle, or year in our model, specified by τ. This emulates real world temperature fluctuations in varying climate regimes, smaller amplitude being analogous to the tropics, larger to more temperate regions.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Temperature dependent growth rate</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/temp_dependent_growth.png" alt="Growth rate of five species over one season, each peaking when the environment reaches its thermal optimum" width="2048" height="752" loading="lazy" decoding="async">
+              <img class="show__eq" src="images/eq_mu.png" alt="Growth rate mu as a Gaussian function of temperature minus thermal optimum" width="996" height="164" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  Temperature dependent species growth rate μ is implemented by a shifted Gaussian function, which takes temperature at time <em>t</em> and a species thermal optimum <em>x<sub>i</sub></em>, the temperature at which they grow best, and provides their growth rate at any given time.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Ecological Dynamics with temperature fluctuation</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/eco_dynamics_season.gif" alt="Ecological density dynamics with seasonal temperature fluctuation" width="2048" height="674" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  This is what a 5 species community's ecological dynamics look like in our model. First we have a settling period, then we find a repeating annual limit cycle.
+                </p>
+              </figcaption>
+            </figure>
+            <figure class="show__fig">
+              <img class="show__img" src="images/eco_dynamics_limit_cycle.png" alt="Settling onto a limit cycle, then a repeating seasonal periodic solution" width="2048" height="956" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  If we freeze those dynamics it is easier to see the different periods. We have the settling before the first dashed line, then from 0 to τ we have the first limit cycle, which repeats indefinitely from there.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+
+          <article class="show">
+            <h3 class="show__title">How is invasion fitness defined mathematically?</h3>
+            <figure class="show__fig show__fig--mid">
+              <img class="show__img show__img--plain" src="images/invasion_fitness_math.png" alt="Invasion fitness lambda as the average over one period of instantaneous growth g" width="1578" height="588" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  Invasion fitness is defined as the time-integrated instantaneous growth rate of a species over one year. Positive fitness means that the population density grew on average during a year and negative fitness means that it shrunk. A negative fitness means they will die out in the long run and are not viable in the given environment.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">Evolution near bifurcation</h3>
+            <figure class="show__fig show__fig--mid">
+              <img class="show__img" src="images/branch_1to2_landscape_draw.gif" alt="Fitness landscape as one species evolves and a second is introduced nearby" width="1100" height="780" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  Next we introduce trait evolution by looking at where we can first introduce a second species. This fitness landscape shows one species evolving with a second being introduced nearby. I like to think of the traits climbing their local fitness landscape towards the nearest peak.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show show--note">
+            <h3 class="show__title">What is an Evolutionary Stable Community (ESC)?</h3>
+            <div class="show__note">
+              <p>
+                The theoretical endpoint of evolution (invasion and assembly) for a given environment, which consists of a set of species whose population and trait dynamics are on attractors, and is globally uninvasible (Kremer &amp; Klausmeier 2017).
+              </p>
+              <p>
+                As such any mutant attempting to invade an ESC would have negative invasion fitness and fail to persist.
+              </p>
+            </div>
+          </article>
+
+          <article class="show">
+            <h3 class="show__title">5 species evolve to evolutionary stability</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/trait_evo_landscape_draw_linear_zoom.gif" alt="Five species evolving on a fitness landscape toward an ESC" width="1400" height="720" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  This is how the evolution process looks as a 5 species seed community converges to evolutionary stability, also known as an evolutionarily stable community (ESC).
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+          <article class="show show--esc-cont">
+            <h3 class="show__title">Evolutionary dynamics</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/evolutionary_dynamics.png" alt="Thermal optima of five species evolving from seed values to their ESC values" width="2048" height="927" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  These evolutionarily stable communities (ESCs) are what we seed into our continuation solver to find the extent in temperature amplitude that these communities persist.
+                </p>
+              </figcaption>
+            </figure>
+
+            <div class="esc-bridge" aria-hidden="true">
+              <img class="esc-bridge__img" src="images/esc_to_continuation_arrow.png" alt="" width="440" height="560" loading="lazy" decoding="async">
+            </div>
+
+            <h3 class="show__title">Continuation across temperature amplitude</h3>
+            <figure class="show__fig">
+              <img class="show__img" src="images/bif_cadp_esc5_highlight.png" alt="CADP bifurcation diagram with the five-species ESC marked by the same colored dots on a dashed amplitude line" width="2400" height="1280" loading="lazy" decoding="async">
+              <figcaption class="show__cap">
+                <p>
+                  The horizontal axis is not time, it is seasonal temperature fluctuation. As it increases, the number of coexisting species can also increase.
+                </p>
+                <p>
+                  The colored dots are the same 5-species ESC from above, placed on the continuation diagram at the amplitude where that community is seeded.
+                </p>
+              </figcaption>
+            </figure>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="poster-box area-results" aria-labelledby="results-h">
+        <h2 class="poster-box__header" id="results-h">Key Results</h2>
+        <div class="poster-box__body story-body">
+          <ul class="discussion-list">
+            <li><strong>Predation increases structural stability, widening the range of environments under which communities can stably coexist.</strong></li>
+            <li><strong>Introducing a predator increases temporal species turnover, β.</strong></li>
+            <li><strong>Predation supports more species richness at lower temperature amplitudes ecologically, but these communities fail to persist once thermal optima are allowed to evolve.</strong></li>
+          </ul>
+          <figure class="show__fig show__fig--tall">
+            <img class="show__img" src="images/bif_stable_compare.png" alt="Community bifurcation diagrams comparing predator-absent and predator-present models across seasonal amplitude" width="1780" height="2760" loading="lazy" decoding="async">
+            <figcaption class="show__cap">
+              <p>
+                <strong>Fig. 4.</strong> Community bifurcation diagrams: evolutionarily
+                stable community (ESC) trait values across seasonal amplitude
+                <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
+                Shading highlights structural stability: lighter represents a relatively wider range of environments
+                over which the community persists. Vertical dashed
+                lines mark qualitative transitions (by eye) in species densities; the small intervals between these dashed lines represent regions where species densities are quickly changing.
+              </p>
+              <p>
+                Predation buffered the effect of fluctuating temperature, allowing communities to persist through larger ranges of temperature amplitude. Species richness in ESCs went down on average under predation.
+              </p>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section class="poster-box area-diversity" aria-labelledby="div-h">
-        <h2 class="poster-box__header" id="div-h">Diversity</h2>
-        <div class="poster-box__body">
-          <figure class="full-col-fig">
-            <img src="https://loganjones.org/images/kbs-poster/diversity_panels_compare.png?v=5" alt="Species diversity panels comparing predator-absent and predator-present models across seasonal amplitude" width="900" height="700" loading="lazy">
-            <figcaption class="fig-cap">
-              <strong>Fig. 5.</strong> Species diversity across seasonal amplitude
-              (<em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
-              α-diversity is average instantaneous species diversity,
-              γ-diversity is time-integrated species diversity, and
-              β-diversity is species turnover.
-              Predation decreases α alongside a relatively smaller decrease in γ;
-              the shift in their ratio drives higher average turnover, β.
+        <h2 class="poster-box__header" id="div-h">Predation increases temporal species turnover</h2>
+        <div class="poster-box__body story-body">
+          <figure class="show__fig">
+            <img class="show__img" src="images/turnover_compare.png" alt="Beta diversity across seasonal amplitude, predator absent versus predator present" width="4400" height="1800" loading="lazy" decoding="async">
+            <img class="show__eq show__eq--small" src="images/eq_beta.png" alt="Beta diversity equals gamma diversity divided by alpha diversity" width="460" height="204" loading="lazy" decoding="async">
+            <figcaption class="show__cap">
+              <p>
+                Introducing a predator increases species turnover (β-diversity). This effect is mediated by a decrease in average instantaneous species diversity (α-diversity) alongside a relatively smaller decrease in time-integrated species diversity (γ-diversity); the resulting shift in their ratio drives higher average turnover.
+              </p>
+              <p>
+                This means that species were temporally more spread out, being more abundant in their own window of time during the year and also replacing each other more frequently.
+              </p>
+            </figcaption>
+          </figure>
+          <figure class="show__fig show__fig--full">
+            <img class="show__img" src="images/diversity_panels_compare.png" alt="Species diversity panels comparing predator-absent and predator-present models across seasonal amplitude" width="6000" height="2042" loading="lazy" decoding="async">
+            <figcaption class="show__cap">
+              <p>
+                <strong>Fig. 5.</strong> Species diversity across seasonal amplitude
+                <em>T</em><sub>amp</sub>. Top: predator absent. Bottom: predator present.
+                α-diversity is average instantaneous species diversity,
+                γ-diversity is time-integrated species diversity, and
+                β-diversity is species turnover.
+                Predation decreases α alongside a relatively smaller decrease in γ;
+                the shift in their ratio drives higher average turnover, β.
+              </p>
             </figcaption>
           </figure>
         </div>
@@ -262,15 +513,12 @@
 
       <section class="poster-box area-discussion" aria-labelledby="discussion-h">
         <h2 class="poster-box__header" id="discussion-h">Discussion</h2>
-        <div class="poster-box__body">
-          <ul class="discussion-list">
-            <li><strong>Predation increases structural stability, widening the range of environments under which communities can stably coexist.</strong></li>
-            <li><strong>Introducing a predator increases species turnover, β.</strong></li>
-            <li><strong>Predation supports more species richness at lower temperature amplitudes ecologically, but these communities fail to persist once thermal optima are allowed to evolve.</strong></li>
-          </ul>
-          <p>
-            Our study implies that predation can foster communities that are more robust to varying amplitudes of temperature fluctuations, raising an exciting empirical question: does predation allow communities to remain qualitatively unchanged as temperature fluctuations intensify?
-          </p>
+        <div class="poster-box__body story-body">
+          <div class="story-prose">
+            <p>
+              Our study implies that predation can foster communities that are more robust to varying amplitudes of temperature fluctuations, raising an exciting empirical question: does predation allow communities to remain qualitatively unchanged as temperature fluctuations intensify?
+            </p>
+          </div>
         </div>
       </section>
 
@@ -287,7 +535,7 @@
           <div class="ack-footer-row">
             <div class="ack-qr">
               <a href="#bibliography" data-open-panel="bibliography" class="ack-qr-link" aria-label="Open full bibliography">
-                <img src="https://loganjones.org/images/kbs-poster/qr-code.png" alt="" width="140" height="140" loading="lazy">
+                <img src="https://loganjones.org/images/kbs-poster/qr-code.png" alt="" width="140" height="140" loading="lazy" decoding="async">
               </a>
               <p class="ack-qr-caption">
                 Scan for digital twin, references, and further reading<br>
@@ -296,15 +544,23 @@
             </div>
             <div class="ack-stack">
               <a href="https://www.canr.msu.edu/research/agbioresearch/doug-and-maria-bayer-new-initiatives-fund-for-sustainable-agriculture" target="_blank" rel="noopener noreferrer" aria-label="Michigan State University (opens in new tab)">
-                <img src="https://loganjones.org/images/kbs-poster/Bayer_scholarship_green.png" alt="Douglas and Maria Bayer Scholarship Fund, Michigan State University" width="340" height="130" loading="lazy">
+                <img src="https://loganjones.org/images/kbs-poster/Bayer_scholarship_green.png" alt="Douglas and Maria Bayer Scholarship Fund, Michigan State University" width="340" height="130" loading="lazy" decoding="async">
               </a>
-              <img src="https://loganjones.org/images/kbs-poster/WSU_horizontal_purple_splatter.png" alt="Weber State University" width="320" height="80" loading="lazy">
+              <img src="https://loganjones.org/images/kbs-poster/WSU_horizontal_purple_splatter.png" alt="Weber State University" width="320" height="80" loading="lazy" decoding="async">
             </div>
           </div>
         </div>
       </section>
 
-      </div>
+      <details class="explore-details story-details" id="math-quirks">
+        <summary class="explore-details__summary">Mathematical Quirks: Does predation facilitate chaos in eco-evolutionary models?</summary>
+        <div class="explore-details__body story-body">
+          <figure class="show__fig show__fig--mid">
+            <img class="show__img" src="images/math_quirks_chaos.png" alt="Stroboscopic section of prey and predator densities suggesting chaotic dynamics under seasonal forcing" width="2048" height="1638" loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </details>
+
     </div>
     </div>
 
@@ -411,8 +667,7 @@
       </p>
     </aside>
   </main>
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <script src="app.js?v=6.3"></script>
-  <script src="poster.js?v=5.8" defer></script>
+  <script src="app.js?v=7.0" defer></script>
+  <script src="poster.js?v=7.0" defer></script>
 </body>
 </html>

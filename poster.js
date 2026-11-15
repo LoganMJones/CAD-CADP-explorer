@@ -23,6 +23,9 @@
     if (el.tagName === "DETAILS") {
       el.open = true;
     }
+    if ((id === "explore" || id === "panel-explore") && window.CADPExplorer) {
+      window.CADPExplorer.startExplorer();
+    }
     scrollToEl(el);
   }
 
@@ -37,10 +40,15 @@
       openPanel(id === "references" ? "bibliography" : id);
       return;
     }
+    if (id === "explore" || id === "panel-explore") {
+      openPanel("explore");
+      return;
+    }
     // Prefer the visible section title under the sticky nav
-    var section = el.closest(".poster-box, .model-panel, .poster-panel") || el;
+    var section = el.closest(".poster-box, .model-panel, .poster-panel, .explore-details") || el;
     var target =
       section.querySelector(".poster-box__header") ||
+      section.querySelector(".explore-details__summary") ||
       section.querySelector(".model-head h3") ||
       section;
     scrollToEl(target);
@@ -55,6 +63,8 @@
       openPanel("abstract");
     } else if (hash === "proposal") {
       openPanel("proposal");
+    } else if (hash === "explore" || hash === "panel-explore") {
+      openPanel("explore");
     } else if (hash === "poster") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {

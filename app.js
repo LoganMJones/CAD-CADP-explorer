@@ -1139,27 +1139,76 @@ async function bootPanel(el) {
   return panel;
 }
 
-async function main() {
-  const el = document.querySelector(".model-panel");
-  const live = [];
-  if (el) {
-    try {
-      const panel = await bootPanel(el);
-      if (panel) live.push(panel);
-    } catch (err) {
-      console.error(err);
-      el.querySelector(".status").textContent = `error: ${err.message}`;
-    }
-  }
+const PLOTLY_CDN = "https://cdn.plot.ly/plotly-2.35.2.min.js";
+let explorerBooted = false;
+let explorerBooting = false;
 
-  function syncAllTicks() {
-    live.forEach((p) => p.syncTickLabels());
-  }
-  if (typeof MOBILE_MQ.addEventListener === "function") {
-    MOBILE_MQ.addEventListener("change", syncAllTicks);
-  } else if (typeof MOBILE_MQ.addListener === "function") {
-    MOBILE_MQ.addListener(syncAllTicks);
+function loadPlotlyOnce() {
+  if (typeof Plotly !== "undefined") return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-plotly-loader]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("Plotly failed to load")));
+      return;
+    }
+    const s = document.createElement("script");
+    s.src = PLOTLY_CDN;
+    s.async = true;
+    s.dataset.plotlyLoader = "1";
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Plotly failed to load"));
+    document.head.appendChild(s);
+  });
+}
+
+async function startExplorer() {
+  if (explorerBooted || explorerBooting) return;
+  const el = document.querySelector("[data-explorer-root], .model-panel");
+  if (!el) return;
+  explorerBooting = true;
+  const status = el.querySelector(".status");
+  if (status) status.textContent = "loading Plotly…";
+  try {
+    await loadPlotlyOnce();
+    const panel = await bootPanel(el);
+    explorerBooted = true;
+    function syncAllTicks() {
+      if (panel) panel.syncTickLabels();
+    }
+    if (typeof MOBILE_MQ.addEventListener === "function") {
+      MOBILE_MQ.addEventListener("change", syncAllTicks);
+    } else if (typeof MOBILE_MQ.addListener === "function") {
+      MOBILE_MQ.addListener(syncAllTicks);
+    }
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+  } catch (err) {
+    console.error(err);
+    if (status) status.textContent = `error: ${err.message}`;
+  } finally {
+    explorerBooting = false;
   }
 }
 
-main();
+window.CADPExplorer = { startExplorer };
+
+function bindExplorerLazyStart() {
+  const details = document.getElementById("explore");
+  if (!details) {
+    startExplorer();
+    return;
+  }
+  const maybeStart = () => {
+    if (details.open) startExplorer();
+  };
+  details.addEventListener("toggle", maybeStart);
+  if (details.open) maybeStart();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bindExplorerLazyStart);
+} else {
+  bindExplorerLazyStart();
+}
